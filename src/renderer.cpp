@@ -165,7 +165,7 @@ void Renderer::render()
         p3 = {game,{2.5 - x_offset + i, 2.5 - y_offset, 0}};
 
         std::cout << p1.x << " " << p1.y << "\t"<< p2.x << " " << p2.y << "\t"<< p3.x << " " << p3.y << "\n";
-        Triangle t(game->window_manager.screen, &Color::red, p1,p2,p3);
+        Triangle t(game->window_manager.screen, &Color::red, p1.x, p1.y, p2.x,p2.y,p3.x,p3.y);
         t.draw();
     }
 
