@@ -1,11 +1,13 @@
 #include "triangle.hpp"
+#include <iostream>
 
-Triangle::Triangle(Screen* screen,Pixel* color, int x1, int y1, int x2, int y2, int x3, int y3)
-    :edges{Edge(this, x1, y1, x2, y2),
-		Edge(this, x2, y2, x3, y3),
-		Edge(this, x3, y3, x1, y1)}, screen{screen}, color{*color}
+Triangle::Triangle(Screen* screen,Pixel* color, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3)
+:screen{screen}, color{*color}
 {
-
+    edges[0] = Edge(this, p1.x, p1.y, p2.x, p2.y);
+    edges[1] = Edge(this, p2.x, p2.y, p3.x, p3.y);
+    edges[2] = Edge(this, p3.x, p3.y, p1.x, p1.y);
+    
     //lets get longest Edge
     if(edges[0].getLength() > edges[1].getLength())
         long_edge = (edges[0].getLength() > edges[2].getLength())?0:2;

@@ -2,10 +2,11 @@
 #include "screen.hpp"
 #include "edge.hpp"
 #include "pixel.hpp"
+#include "point.hpp"
 class Triangle
 {
 public:
-    Triangle(Screen* s, Pixel* c, int x1, int y1, int x2, int y2, int x3, int y3);
+    Triangle(Screen* s, Pixel* c, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3);
     void draw();
 
     Edge edges[3];
