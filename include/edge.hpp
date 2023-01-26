@@ -6,11 +6,11 @@ class Triangle;
 class Edge
 {
 public:
-    Edge(Triangle* t, int x1, int y1, int x2, int y2);
+    Edge(Triangle* t, const ScreenPoint& p1, const ScreenPoint& p2);
 
     int getLength();
     int getWidth();
-    int x1, y1, x2, y2;
+    ScreenPoint p1,p2;
     Triangle* t;
     void drawSpans(Edge edge2);
 };

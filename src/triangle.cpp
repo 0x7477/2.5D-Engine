@@ -2,7 +2,7 @@
 #include <iostream>
 
 Triangle::Triangle(Screen* screen,Pixel* color, const ScreenPoint& p1, const ScreenPoint& p2, const ScreenPoint& p3)
-:edges{Edge(this, p1.x, p1.y, p2.x, p2.y),Edge(this, p2.x, p2.y, p3.x, p3.y),Edge(this, p3.x, p3.y, p1.x, p1.y)}, screen{screen}, color{*color}
+:edges{Edge(this, p1, p2),Edge(this, p2, p3),Edge(this, p3, p1)}, screen{screen}, color{*color}
 {
     //lets get longest Edge
     if(edges[0].getLength() > edges[1].getLength())
