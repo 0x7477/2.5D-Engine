@@ -6,7 +6,7 @@
 class Triangle
 {
 public:
-    Triangle(Screen* s, Pixel* c, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3);
+    Triangle(Screen* s, Pixel* c, const ScreenPoint& p1, const ScreenPoint& p2, const ScreenPoint& p3);
     void draw();
 
     Edge edges[3];
