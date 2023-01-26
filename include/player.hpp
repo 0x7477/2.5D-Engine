@@ -9,7 +9,7 @@ class Player
 public:
     Player();
     void move(Map* map, double deltaTime);
-    double pos_x= 5.5, pos_y= 5.5, pos_z;
+    double pos_x= 3.5, pos_y= 5.5, pos_z;
     double angle = M_PI;
     double field_of_view = 100 * M_PI / 360.0;
 
