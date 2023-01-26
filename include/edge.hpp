@@ -7,7 +7,6 @@ class Edge
 {
 public:
     Edge(Triangle* t, int x1, int y1, int x2, int y2);
-    Edge(){};
 
     int getLength();
     int getWidth();
