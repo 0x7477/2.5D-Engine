@@ -8,10 +8,12 @@
 int WindowManager::window_height= 600;
 int WindowManager::window_width= 1000;
 
+float factor = 4;
+
 Game* WindowManager::game;
 WindowManager::WindowManager(int argc, char** argv, Game* game)
 {
-    screen = new Screen(window_width, window_height);
+    screen = new Screen(window_width/factor, window_height/factor);
     WindowManager::game = game;
 
     glutInit(&argc, argv);
@@ -27,6 +29,7 @@ WindowManager::WindowManager(int argc, char** argv, Game* game)
     glutReshapeFunc(reshape); // render scene every frame even when idle
 
 
+glPixelZoom(factor,factor);
     glutKeyboardFunc(pressKey); // process "normal" keys
     //glutSpecialFunc((void*)pressKey); // process "special" keys
    // glutSpecialUpFunc((void*)releaseKey);
@@ -71,8 +74,8 @@ void WindowManager::update()
 
 void WindowManager::reshape(int width, int height)
 {
-    window_width = width;
-    window_height = height;
+    window_width = width/factor;
+    window_height = height/factor;
     delete screen;
     screen = new Screen(window_width, window_height);
 }

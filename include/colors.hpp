@@ -5,9 +5,9 @@
 namespace Color
 {
 
-    inline Pixel white{255, 255, 255, 255};
-    inline Pixel pink{255, 0, 0xdc, 255};
-    inline Pixel ceiling{0x7c, 0x7c, 0x7c, 255};
-    inline Pixel black{0, 0, 0, 255};
-    inline Pixel red{255, 0, 0, 255};
+    inline Pixel white{0xFFFFFF};
+    inline Pixel pink{0xFF00DC};
+    inline Pixel ceiling{0x7C7C7C};
+    inline Pixel black{0x000000};
+    inline Pixel red{0xFF0000};
 }

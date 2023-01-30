@@ -2,7 +2,7 @@
 #include "raycast.hpp"
 #include "colors.hpp"
 #include "game.hpp"
-#include "triangle.hpp"
+#include "mesh.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -149,10 +149,32 @@ double Renderer::map(double x, double in_min, double in_max, double out_min, dou
 
 void Renderer::render()
 {
+    auto screen = game->window_manager.screen;
     static double framecount = 0;
-    game->window_manager.screen->fill(Color::black);
+    screen->fill(Color::black);
     renderWalls();
     renderObjects();
+    double scale = sin(framecount) * 0.2;
+
+    Quaternion rot{framecount,framecount,framecount};
+
+    Mesh cube{game,  {0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, rot,scale, 
+        {
+            {1,1,-1}, {1,-1,-1}, {-1,1,-1},
+            {-1,-1,-1}, {1,-1,-1}, {-1,1,-1},
+            {1,1,1}, {-1,1,1}, {1,-1,1},
+            {-1,-1,1}, {-1,1,1}, {1,-1,1},
+            {1,-1,1}, {1,-1,-1}, {-1,-1,-1},
+            {1,-1,1}, {-1,-1,-1}, {-1,-1,1},
+            {1,1,1}, {1,1,-1}, {-1,1,-1},
+            {1,1,1}, {-1,1,-1}, {-1,1,1},
+            {1,-1,1}, {1,-1,-1}, {1,1,-1},
+            {1,-1,1}, {1,1,1}, {1,1,-1},
+            {-1,-1,1}, {-1,-1,-1}, {-1,1,-1},
+            {-1,-1,1}, {-1,1,1}, {-1,1,-1},
+        }
+    };
+    cube.draw();
 
     double x_offset = sin(framecount) * 0.5;
     double y_offset = cos(framecount) * 0.5;
@@ -164,8 +186,8 @@ void Renderer::render()
         p2 = {game,{2.5 + x_offset + i, 2.5 + y_offset, 0}};
         p3 = {game,{2.5 - x_offset + i, 2.5 - y_offset, 0}};
 
-        Triangle t(game->window_manager.screen, &Color::red, p1,p2,p3);
-        t.draw();
+        Triangle t(game->window_manager.screen, Color::red, p1,p2,p3);
+        // t.draw();
     }
 
     framecount += 0.01;

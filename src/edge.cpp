@@ -25,6 +25,11 @@ int Edge::getWidth()
 {
 	return p2.x - p1.x;
 }
+
+float Edge::getDepth()
+{
+	return p2.z - p1.z;
+}
 void Edge::drawSpans(Edge edge2)
 {
 	if(getLength() == 0)return;
@@ -39,8 +44,8 @@ void Edge::drawSpans(Edge edge2)
 	for(int y = edge2.p1.y; y < edge2.p2.y; y++) 
 	{
 		// create and draw span
-		Span span(t, p1.x + (int)(getWidth() * factor1),
-		          edge2.p1.x + (int)(edge2.getWidth() * factor2));
+		Span span(t, p1.x + (int)(getWidth() * factor1), p1.z + getDepth() * factor1,
+		          edge2.p1.x + (int)(edge2.getWidth() * factor2), edge2.p1.z + edge2.getDepth() * factor2);
 
 		// increase factors
 		factor1 += factorStep1;

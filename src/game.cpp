@@ -7,7 +7,7 @@
 #include <filesystem>
 
 Game::Game(int argc, char **argv)
-:map{50, 50}, window_manager{argc, argv, this}, renderer{this} {};
+:map{50, 50}, renderer{this},window_manager{argc, argv, this} {};
 
 void Game::start()
 {

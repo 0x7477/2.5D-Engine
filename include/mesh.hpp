@@ -1,11 +1,18 @@
 #include <vector>
 #include "triangle.hpp"
-#include "screen.hpp"
+#include "game.hpp"
+#include "point.hpp"
 class Mesh
 {
-    Mesh(Screen* screen, double x, double y, double z);
-    double x,y,z;
+
+public:
+    Mesh(Game* game, std::vector<Pixel> colors, const WorldPoint& pos,Quaternion rot,  double scale, std::vector<WorldPoint> vertices);
+    Game* game;
+    WorldPoint pos;
+    Quaternion rot;
+    double scale;
+    std::vector<Pixel> colors;
 
     void draw();
-    std::vector<Triangle> triangles;
+    std::vector<WorldPoint> vertices;
 };

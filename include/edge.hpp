@@ -10,6 +10,8 @@ public:
 
     int getLength();
     int getWidth();
+    float getDepth();
+
     ScreenPoint p1,p2;
     Triangle* t;
     void drawSpans(Edge edge2);
