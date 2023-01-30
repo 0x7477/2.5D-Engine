@@ -154,7 +154,7 @@ void Renderer::render()
     screen->fill(Color::black);
     renderWalls();
     renderObjects();
-    double scale = sin(framecount) * 0.2;
+    double scale = sin(framecount)*0.05+0.2;
 
     Quaternion rot{framecount,framecount,framecount};
 
@@ -187,7 +187,7 @@ void Renderer::render()
         p3 = {game,{2.5 - x_offset + i, 2.5 - y_offset, 0}};
 
         Triangle t(game->window_manager.screen, Color::red, p1,p2,p3);
-        // t.draw();
+        t.draw();
     }
 
     framecount += 0.01;

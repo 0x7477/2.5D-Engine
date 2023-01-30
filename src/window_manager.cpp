@@ -8,7 +8,7 @@
 int WindowManager::window_height = 600;
 int WindowManager::window_width = 1000;
 
-float factor = 4;
+float factor = 2;
 
 Game *WindowManager::game;
 WindowManager::WindowManager(int argc, char **argv, Game *game)
@@ -18,11 +18,10 @@ WindowManager::WindowManager(int argc, char **argv, Game *game)
 
     glutInit(&argc, argv);
     glutInitWindowPosition(400, 400);
-    glPixelZoom(factor, factor);
-
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_RGBA);
     glutCreateWindow("shooter");
+    glPixelZoom(factor, factor);
 
     glutIgnoreKeyRepeat(1);   // ignore annoying windows key repeat delay
     glutIdleFunc(update);
@@ -30,6 +29,7 @@ WindowManager::WindowManager(int argc, char **argv, Game *game)
 
     glutKeyboardFunc(pressKey);
     glutKeyboardUpFunc(releaseKey); 
+    // OpenGL initialisation
 
     game->start();
 
