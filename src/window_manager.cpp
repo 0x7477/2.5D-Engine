@@ -8,8 +8,7 @@
 int WindowManager::window_height = 600;
 int WindowManager::window_width = 1000;
 
-float factor = 2;
-
+float factor = 4;
 Game *WindowManager::game;
 WindowManager::WindowManager(int argc, char **argv, Game *game)
 {

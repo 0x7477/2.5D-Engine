@@ -14,7 +14,7 @@ void Game::start()
     readTextures("/home/kurt/Documents/DHBW/CG/resources");
     map.generate(this);
 
-    objects = {{5,5,"test"},{20,10,"nazi"},{8,8,"nazi"}};
+    objects = {{2,2,"test"},{20,10,"nazi"},{8,8,"nazi"}};
     last_clock = clock();
 }
 

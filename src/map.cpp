@@ -29,7 +29,7 @@ void Map::generate(Game* game)
             map[x + y * width].walkable = map[x + y * width].transparent;
 
             if(!map[x + y * width].transparent)
-                map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"swastika":"wall2"]);
+                map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"wall":"wall2"]);
         }
     }
 }
