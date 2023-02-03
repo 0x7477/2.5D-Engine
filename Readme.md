@@ -15,5 +15,5 @@ Runnig
 sh run.sh
 ```
 
-> Note: If the game is not installed the textures are exected to be at the "ressource" path.
+> Note: When started the textures are exected to be at the relative "ressources" path.
 > running the scripts outside of the projects root folder may not work
