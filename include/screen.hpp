@@ -2,6 +2,7 @@
 
 #include "pixel.hpp"
 
+/// @brief The screen buffer
 class Screen
 {
     public: 

@@ -3,6 +3,8 @@
 #include "edge.hpp"
 #include "pixel.hpp"
 #include "point.hpp"
+
+/// @brief A screenspace triangle
 class Triangle
 {
 public:

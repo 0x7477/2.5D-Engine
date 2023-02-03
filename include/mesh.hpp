@@ -3,6 +3,8 @@
 #include "triangle.hpp"
 #include "game.hpp"
 #include "point.hpp"
+
+/// @brief A Mesh displayable in the game
 class Mesh
 {
 

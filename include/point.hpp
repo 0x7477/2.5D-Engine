@@ -8,6 +8,7 @@ class Player;
 class ScreenPoint;
 class WorldPoint;
 
+/// @brief A Quaternion class
 class Quaternion
 {
 public:
@@ -21,6 +22,7 @@ public:
     static Quaternion identity;
 };
 
+/// @brief A point in worldspace
 class WorldPoint
 {
 
@@ -42,6 +44,7 @@ public:
     double x = 0, y = 0, z = 0;
 };
 
+/// @brief A point in screenspace
 class ScreenPoint
 {
 

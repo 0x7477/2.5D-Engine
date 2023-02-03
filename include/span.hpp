@@ -1,6 +1,8 @@
 #pragma once
 #include "pixel.hpp"
 #include "triangle.hpp"
+
+/// @brief An edges span
 class Span
 {
 public:
@@ -14,7 +16,7 @@ public:
     /// @param y the choord y to be drawn at
     void draw(int y);
 
-    
+
     int x1, x2;
     float depth1, depth2;
     Triangle* t;

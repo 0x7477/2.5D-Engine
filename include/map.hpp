@@ -3,6 +3,7 @@
 
 class Game;
 
+/// @brief The Map of the game
 class Map
 {
     public:

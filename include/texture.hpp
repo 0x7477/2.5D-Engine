@@ -1,6 +1,8 @@
 #pragma once
 #include "pixel.hpp"
 #include <filesystem>
+
+/// @brief A texture for objects and walls
 class Texture
 {
     public:

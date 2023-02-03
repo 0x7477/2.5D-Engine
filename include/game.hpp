@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 
+/// @brief The Game Object
 class Game
 {
     public:

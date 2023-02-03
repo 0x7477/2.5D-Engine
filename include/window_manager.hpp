@@ -3,6 +3,7 @@
 
 class Game;
 
+/// @brief A window management utility for the game
 class WindowManager
 {
     public: 

@@ -2,7 +2,7 @@
 #include "player.hpp"
 #include "map.hpp"
 
-
+/// @brief A raycast utility for the renderer
 class Raycast
 {
 public:

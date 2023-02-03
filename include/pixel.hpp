@@ -1,4 +1,6 @@
 #pragma once 
+
+/// @brief A Pixel in the screen buffer
 typedef struct Pixel
 {    
     /// @brief default constor

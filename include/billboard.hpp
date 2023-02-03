@@ -5,6 +5,7 @@
 
 class Player;
 
+/// @brief A Billboard Object in the game
 class Billboard
 {
 public:

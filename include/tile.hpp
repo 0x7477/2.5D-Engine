@@ -1,6 +1,8 @@
 #pragma once
 
 #include "texture.hpp"
+
+/// @brief A tile inside a map
 class Tile
 {
 public:

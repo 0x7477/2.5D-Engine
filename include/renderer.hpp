@@ -4,6 +4,7 @@ class Game;
 class Mesh;
 class Billboard;
 
+/// @brief The game renderer
 class Renderer
 {
 public:

@@ -5,6 +5,7 @@
 
 class WorldPoint;
 
+/// @brief The Player object
 class Player
 {
 public:
