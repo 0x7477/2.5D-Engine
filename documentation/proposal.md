@@ -20,7 +20,7 @@ avoided.
 ## How it is going to look
 
 As this will be a implementation and extension of the Wolfenstein
-3D Engine and textures from teh game will be used I expect the result
+3D Engine and textures from the game will be used I expect the result
 to look somewhat similar to the original game. A screenshot is attached below.
 
 ![](img/Wolf3d_pc.png)
