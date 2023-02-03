@@ -3,7 +3,7 @@
 Span::Span(Triangle* t, int x1_, float z1_, int x2_, float z2_)
 :t{t}
 {
-
+	//x is the leftmostr point
     if(x1_ < x2_) 
     {
 		x1 = x1_;
@@ -32,11 +32,14 @@ void Span::draw(int y)
 	float factorStep = 1.0f / (float)getLength();
 
 	float depth_delta = depth2 - depth1;
-    	// draw each pixel in the span
+
+	// draw each pixel in the span
 	for(int x = std::max(x1,0); x < std::min(x2,t->screen->width); x++) 
     {
 		auto depth = depth1 + depth_delta * factor;
 		factor += factorStep;
+
+		//skip if hidden
 		if(t->screen->getDepth(x,y) < depth)
 			continue;
 

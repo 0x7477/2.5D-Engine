@@ -1,5 +1,4 @@
 #include "window_manager.hpp"
-#include "settings.hpp"
 #include "colors.hpp"
 #include "game.hpp"
 #include <GL/freeglut.h>
@@ -8,31 +7,39 @@
 int WindowManager::window_height = 600;
 int WindowManager::window_width = 1000;
 
-int factor = 1;
+int factor = 1; //how many pixels per pixel you want to display
 Game *WindowManager::game;
 WindowManager::WindowManager(int argc, char **argv, Game *game)
 {
+    //init screen
     screen = new Screen(window_width / factor, window_height / factor);
+
+    //assign static variable
     WindowManager::game = game;
 
+    //setup window
     glutInit(&argc, argv);
     glutInitWindowPosition(400, 400);
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_RGBA);
     glutCreateWindow("shooter");
+
+    //used for a more older look
     glPixelZoom(factor, factor);
 
-    glutIgnoreKeyRepeat(1);   // ignore annoying windows key repeat delay
+    glutIgnoreKeyRepeat(1);   // ignore annoying key repeat delay
+
+    // set function pointers
     glutIdleFunc(update);
     glutReshapeFunc(reshape);
 
     glutKeyboardFunc(pressKey);
     glutKeyboardUpFunc(releaseKey); 
-    // OpenGL initialisation
 
+    // init game
     game->start();
 
-    // enter glut event processing infinite loop
+    // enter update loop
     glutMainLoop();
 }
 
@@ -66,6 +73,7 @@ void WindowManager::update()
 
 void WindowManager::reshape(int width, int height)
 {
+    //create a new screen buffer
     window_width = width / factor;
     window_height = height / factor;
     delete screen;

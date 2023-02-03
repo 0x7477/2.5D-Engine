@@ -2,17 +2,21 @@
 #include <iostream>
 double Raycast::raycast(Player *player, Map *map, double ray_angle, double* ray_x, double* ray_y)
 {
+    //setup
     double distance = 0;
     *ray_x = player->pos_x;
     *ray_y = player->pos_y;
 
+    //get delta
     double deltaDistance = 0.0000000000001f;
-
     double delta_x = sin(ray_angle) * deltaDistance;
     double delta_y = cos(ray_angle) * deltaDistance;
+
+    //advance ray until hit
     while (map->covers(*ray_x,*ray_y) && (*map)((int)(*ray_x + delta_x),(int)(*ray_y +delta_y))->isTransparent())
         distance += getNearestHit(ray_x, ray_y, ray_angle);
     
+    //advance ray to pierce through wall
     *ray_x += delta_x;
     *ray_y += delta_y;
     return distance;
@@ -29,10 +33,8 @@ double Raycast::getNearestHit(double *pos_x, double *pos_y, double angle)
     double distances[6];
     // When is it going to hit x = 1
     // 1=rel_px + r* ray_x
-    //(1-rel_px/ray_x)  = r
-
-    
-
+    // (1-rel_px/ray_x)  = r
+    // in other words, we look how long it takes for our ray until our x or y becomes an integer
     distances[0] = (((1 - rel_px) / ray_x));
     distances[1] = (((0 - rel_px) / ray_x));
     distances[2] = (((-1 - rel_px) / ray_x));

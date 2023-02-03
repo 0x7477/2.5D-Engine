@@ -4,6 +4,7 @@
 Edge::Edge(Triangle* t,const ScreenPoint& p1_, const ScreenPoint& p2_)
 :t{t}
 {
+	//p1 is the lower point
     if(p1_.y < p2_.y) 
 	{
 		p1 = p1_;
@@ -51,7 +52,7 @@ void Edge::drawSpans(const Edge& edge2)
 		factor1 += factorStep1;
 		factor2 += factorStep2;
 
-
+		//continue if out of bounds
 		if(y <0) continue;
 		if(y >= t->screen->height-1) continue;
 

@@ -25,11 +25,12 @@ void Map::generate()
     {
         for(int y = 0; y < height; y++)
         {
+            // set transparancy randomly (3% chance)
             map[x + y * width].transparent = !(x % (width - 1) == 0 || y % (height - 1) == 0 || rand() % 100 <3);
             map[x + y * width].walkable = map[x + y * width].transparent;
 
-            if(!map[x + y * width].transparent)
-                map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"wall":"wall2"]);
+            //apply the twi textures in a checkboard pattern 
+            map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"wall":"wall2"]);
         }
     }
 }

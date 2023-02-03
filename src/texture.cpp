@@ -6,20 +6,30 @@
 #include <iterator>
 #include <cstring>
 
+Texture::Texture()
+{
+    checkboard(Color::black, Color::pink);
+};
+
 Texture::Texture(std::string path)
 {
     std::ifstream file(path, std::ifstream::in);
     if(!file.is_open())
     {
+        //replace texture with checkboard pattern
         checkboard(Color::black, Color::pink);
         return;
     }
+
     std::string data(std::istreambuf_iterator<char>{file}, {});
+
+    //cut header
     memcpy(&pixel,data.substr(0x46).c_str(), 64*64*4);
 
     for(int x = 0; x < 64; x++)
         for(int y = 0; y < 64; y++)
         {
+            //swap colors, because gimp saves in a different format than OpenGL needs
             unsigned char temp = pixel[x][y].r;
             pixel[x][y].a = pixel[x][y].a;
             pixel[x][y].g = pixel[x][y].g;

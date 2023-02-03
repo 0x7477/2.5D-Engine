@@ -6,7 +6,14 @@
 class Triangle
 {
 public:
-    Triangle(Screen* s, Pixel c, const ScreenPoint& p1, const ScreenPoint& p2, const ScreenPoint& p3);
+    /// @brief creates a Tringle
+    /// @param screen the screen in which the triangle should be drawn at
+    /// @param colorthe color f the triangle
+    /// @param p1 point one
+    /// @param p2 point two
+    /// @param p3 point three
+    Triangle(Screen* screen, Pixel color, const ScreenPoint& p1, const ScreenPoint& p2, const ScreenPoint& p3);
+    /// @brief draws the tringle at the screen
     void draw();
 
     Edge edges[3];
