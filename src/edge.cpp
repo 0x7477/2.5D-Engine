@@ -16,21 +16,21 @@ Edge::Edge(Triangle* t,const ScreenPoint& p1_, const ScreenPoint& p2_)
 	}
 };
 
-int Edge::getLength()
-{
-	return p2.y - p1.y;
-}
-
-int Edge::getWidth()
+int Edge::getWidth() const
 {
 	return p2.x - p1.x;
 }
 
-float Edge::getDepth()
+int Edge::getLength() const
+{
+	return p2.y - p1.y;
+}
+
+float Edge::getDepth() const
 {
 	return p2.z - p1.z;
 }
-void Edge::drawSpans(Edge edge2)
+void Edge::drawSpans(const Edge& edge2)
 {
 	if(getLength() == 0)return;
 	if(edge2.getLength() == 0)return;
@@ -50,6 +50,8 @@ void Edge::drawSpans(Edge edge2)
 		// increase factors
 		factor1 += factorStep1;
 		factor2 += factorStep2;
+
+
 		if(y <0) continue;
 		if(y >= t->screen->height-1) continue;
 

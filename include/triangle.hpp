@@ -12,6 +12,5 @@ public:
     Edge edges[3];
     Screen* screen;
     int long_edge, short_edge1, short_edge2;
-
     Pixel color;
 };

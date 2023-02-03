@@ -2,6 +2,7 @@
 
 #include "pixel.hpp"
 
+/// @brief Some color definitions
 namespace Color
 {
 

@@ -3,6 +3,7 @@
 #include <cmath>
 class Game;
 class Screen;
+class Player;
 
 class ScreenPoint;
 class WorldPoint;
@@ -11,10 +12,13 @@ class Quaternion
 {
 public:
     Quaternion(double x, double y, double z);
+    Quaternion(double w, double x, double y, double z);
 
     WorldPoint operator*(const WorldPoint& p) const;
 
-    double x = 0, y = 0, z = 0, w = 0;
+    double w = 0, x = 0, y = 0, z = 0;
+
+    static Quaternion identity;
 };
 
 class WorldPoint
@@ -25,6 +29,8 @@ public:
     WorldPoint(double x, double y, double z);
     WorldPoint operator+(const WorldPoint &p2) const;
     WorldPoint operator*(double scale) const;
+    double getAngle(const Player* player) const;
+    double getDistance(const Player* player) const;
 
     double x = 0, y = 0, z = 0;
 };

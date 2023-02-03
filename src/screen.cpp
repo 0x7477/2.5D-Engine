@@ -28,6 +28,13 @@ float Screen::getDepth(int x, int y)
     return depthmap[x+ y*width];
 }
 
+void Screen::fillZBuffer(float depth)
+{
+    for(int i = 0; i < width*height; i++)
+        depthmap[i] = depth;
+}
+
+
 
 void Screen::fill(Pixel color)
 {

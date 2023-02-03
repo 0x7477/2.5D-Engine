@@ -1,6 +1,15 @@
 #include "player.hpp"
 #include "window_manager.hpp"
 #include "map.hpp"
+#include "point.hpp"
+
+bool Player::isVisible(const WorldPoint& point) const
+{
+    double angle = point.getAngle(this);
+    return fabs(angle) < field_of_view / 2;
+
+}
+
 void Player::move(Map* map, double deltaTime)
 {
 

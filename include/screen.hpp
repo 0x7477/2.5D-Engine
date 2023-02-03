@@ -25,6 +25,7 @@ class Screen
     void setDepth(int x, int y, float depth);
 
     void fill(Pixel color);
+    void fillZBuffer(float depth = 0);
 
 
 };

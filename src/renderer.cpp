@@ -64,6 +64,9 @@ void Renderer::renderWalls()
 
         for (int y = 0; y < screen->height; y++)
         {
+            if (distance > screen->getDepth(x, y))
+                continue;
+
             double sample_y = (y - floor) / (double)(ceiling - floor);
 
             int pixel_x = (int)(sample_x * 64);
@@ -77,69 +80,61 @@ void Renderer::renderWalls()
     }
 }
 
-void Renderer::renderObjects()
+void Renderer::renderBillboard(const Billboard& object)
 {
+    if (!object.isVisible(&game->player))
+        return;
+
     auto screen = game->window_manager.screen;
-    int screen_height = screen->height;
-    int screen_width = screen->width;
+    double dist = object.pos.getDistance(&game->player);
 
-    for (auto &object : game->objects)
+    int object_ceiling = getCeilScreenYPos(screen->height, dist);
+    int object_floor = getFloorScreenYPos(screen->height, dist);
+
+    int object_height = object_ceiling - object_floor;
+
+    double object_ratio = object.height / object.width;
+    double object_width = object_height / object_ratio;
+
+    int object_center = (int)((0.5 * (object.pos.getAngle(&game->player) / (game->player.field_of_view / 2)) + 0.5) * screen->width);
+
+    int texture_width = 64;
+    int texture_height = 64;
+
+    for (int lx = 0; lx < object_width; lx++)
     {
-        double dist_x = object.x - game->player.pos_x;
-        double dist_y = object.x - game->player.pos_y;
-        double dist = sqrt(dist_x * dist_x + dist_y * dist_y);
-
-        double object_angle = atan2(cos(game->player.angle), sin(game->player.angle)) - atan2(dist_y, dist_x);
-        if (object_angle < -M_PI)
-            object_angle += 2 * M_PI;
-        else if (object_angle > M_PI)
-            object_angle -= 2 * M_PI;
-
-        bool visible = (fabs(object_angle) - fabs(atan2(dist, object.width / 2))) < game->player.field_of_view / 2;
-        if (!visible)
+        int screen_x = object_center + lx - (int)(object_width / 2);
+        if (screen_x < 0 || screen_x >= screen->width)
             continue;
 
-        int object_ceiling = getCeilScreenYPos(screen_height, dist);
-        int object_floor = getFloorScreenYPos(screen_height, dist);
+        int sampleX = (int)((lx / object_width) * texture_width);
 
-        int object_height = object_ceiling - object_floor;
-
-        double object_ratio = object.height / object.width;
-        double object_width = object_height / object_ratio;
-
-        int objectcenter = (int)((0.5 * (object_angle / (game->player.field_of_view / 2)) + 0.5) * screen_width);
-
-        int texture_width = 64;
-        int texture_height = 64;
-
-        for (int lx = 0; lx < object_width; lx++)
+        for (int ly = 0; ly < object_height; ly++)
         {
-            int screen_x = objectcenter + lx - (int)(object_width / 2);
-            if (screen_x < 0 || screen_x >= screen_width)
+            int screen_y = object_floor + ly;
+            if (screen_y < 0 || screen_y > screen->height)
                 continue;
 
-            int sampleX = (int)((lx / object_width) * texture_width);
+            int sampleY = (int)(((double)ly / object_height) * texture_height);
 
-            for (int ly = 0; ly < object_height; ly++)
-            {
-                int screen_y = object_floor + ly;
-                if (screen_y < 0 || screen_y > screen_height)
-                    continue;
+            Pixel sampled_pixel = (*object.texture)(sampleX, sampleY);
+            if (sampled_pixel.a == 0)
+                continue;
 
-                int sampleY = (int)(((double)ly / object_height) * texture_height);
+            if (dist > screen->getDepth(screen_x, screen_y))
+                continue;
 
-                Pixel sampled_pixel = (*object.texture)(sampleX, sampleY);
-                if (sampled_pixel.a == 0)
-                    continue;
-
-                if (dist > screen->getDepth(screen_x, screen_y))
-                    continue;
-
-                screen->setColor(screen_x, screen_y, sampled_pixel);
-                screen->setDepth(screen_x, screen_y, (float)dist);
-            }
+            screen->setColor(screen_x, screen_y, sampled_pixel);
+            screen->setDepth(screen_x, screen_y, (float)dist);
         }
     }
+}
+
+
+void Renderer::renderBillboards()
+{
+    for (const auto &object : game->billboards)
+        renderBillboard(object);
 }
 
 double Renderer::map(double x, double in_min, double in_max, double out_min, double out_max)
@@ -147,48 +142,17 @@ double Renderer::map(double x, double in_min, double in_max, double out_min, dou
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+void Renderer::renderMeshes()
+{
+    for(const auto& mesh: game->meshes)
+        mesh.draw();
+}
+
+
 void Renderer::render()
 {
-    auto screen = game->window_manager.screen;
-    static double framecount = 0;
-    screen->fill(Color::black);
+    game->window_manager.screen->fillZBuffer(99999);
+    renderBillboards();
     renderWalls();
-    renderObjects();
-    double scale = sin(framecount)*0.05+0.2;
-
-    Quaternion rot{framecount,framecount,framecount};
-
-    Mesh cube{game,  {0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, rot,scale, 
-        {
-            {1,1,-1}, {1,-1,-1}, {-1,1,-1},
-            {-1,-1,-1}, {1,-1,-1}, {-1,1,-1},
-            {1,1,1}, {-1,1,1}, {1,-1,1},
-            {-1,-1,1}, {-1,1,1}, {1,-1,1},
-            {1,-1,1}, {1,-1,-1}, {-1,-1,-1},
-            {1,-1,1}, {-1,-1,-1}, {-1,-1,1},
-            {1,1,1}, {1,1,-1}, {-1,1,-1},
-            {1,1,1}, {-1,1,-1}, {-1,1,1},
-            {1,-1,1}, {1,-1,-1}, {1,1,-1},
-            {1,-1,1}, {1,1,1}, {1,1,-1},
-            {-1,-1,1}, {-1,-1,-1}, {-1,1,-1},
-            {-1,-1,1}, {-1,1,1}, {-1,1,-1},
-        }
-    };
-    cube.draw();
-
-    double x_offset = sin(framecount) * 0.5;
-    double y_offset = cos(framecount) * 0.5;
-
-    ScreenPoint p1,p2,p3;
-    for (int i = 0; i < 1; i++)
-    {
-        p1 = {game, {2.5 + i, 2.5, .5}};
-        p2 = {game,{2.5 + x_offset + i, 2.5 + y_offset, 0}};
-        p3 = {game,{2.5 - x_offset + i, 2.5 - y_offset, 0}};
-
-        Triangle t(game->window_manager.screen, Color::red, p1,p2,p3);
-        t.draw();
-    }
-
-    framecount += 0.01;
+    renderMeshes();
 }

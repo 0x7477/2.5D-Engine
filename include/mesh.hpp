@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include "triangle.hpp"
 #include "game.hpp"
@@ -13,6 +14,6 @@ public:
     double scale;
     std::vector<Pixel> colors;
 
-    void draw();
+    void draw() const;
     std::vector<WorldPoint> vertices;
 };

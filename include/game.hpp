@@ -6,6 +6,7 @@
 #include "renderer.hpp"
 #include "texture.hpp"
 #include "billboard.hpp"
+#include "mesh.hpp"
 
 #include <map>
 #include <vector>
@@ -23,7 +24,8 @@ class Game
 
     clock_t updateDeltaClock();
     static inline std::map<std::string, Texture> textures{};
-    static inline std::vector<Billboard> objects{};
+    static inline std::vector<Billboard> billboards{};
+    static inline std::vector<Mesh> meshes{};
     clock_t last_clock;
     Player player;
     Map map;

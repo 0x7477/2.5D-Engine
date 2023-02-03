@@ -1,6 +1,8 @@
 #pragma once
 #include "point.hpp"
 class Game;
+class Mesh;
+class Billboard;
 
 class Renderer
 {
@@ -18,7 +20,12 @@ public:
     double getRayAngle(int x);
     double getTextureSampleX(double ray_x, double ray_y);
 
-    void renderObjects();
+    void renderBillboards();
+    void renderBillboard(const Billboard& object);
+
+    void renderMeshes();
+
+
     void renderWalls();
 
     Game* game;

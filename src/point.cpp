@@ -19,6 +19,28 @@ WorldPoint WorldPoint::operator*(double scale) const
     return {x *scale, y *scale, z *scale};   
 }
 
+double WorldPoint::getAngle(const Player* player) const
+{
+    double dist_x = x - player->pos_x;
+    double dist_y = y - player->pos_y;
+
+    double object_angle = atan2(cos(player->angle), sin(player->angle)) - atan2(dist_y, dist_x);
+
+    if (object_angle < -M_PI)
+        object_angle += 2 * M_PI;
+    else if (object_angle > M_PI)
+        object_angle -= 2 * M_PI;
+
+    return object_angle;
+}
+
+double WorldPoint::getDistance(const Player* player) const
+{
+    double dist_x = x - player->pos_x;
+    double dist_y = y - player->pos_y;
+
+    return sqrt(dist_x * dist_x + dist_y * dist_y);
+}
 
 ScreenPoint::ScreenPoint(){}
 
@@ -65,6 +87,10 @@ bool ScreenPoint::isOnScreen(Screen* screen)
     std::ostream &operator<<(std::ostream &os,const Quaternion& p) { 
     return os << "("<< p.w << "," << p.x << "," << p.y<<"," << p.z << ")";
 }
+Quaternion Quaternion::identity{1,0,0,0};
+
+Quaternion::Quaternion(double w, double x, double y, double z)
+: w{w}, x{x}, y{y}, z{z}{}
 
 Quaternion::Quaternion(double x_, double y_, double z_)
     {

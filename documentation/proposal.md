@@ -8,7 +8,7 @@ and texture of the walls only from that. To display objects I
 want to use billboards. I also want to add a rasterizer to be 
 able to display 3D objects as well.
 
-![](Simple_raycasting_with_fisheye_correction.gif)
+![](img/Simple_raycasting_with_fisheye_correction.gif)
 
 ## What technology I'd like to use:
 
@@ -23,4 +23,4 @@ As this will be a implementation and extension of the Wolfenstein
 3D Engine and textures from teh game will be used I expect the result
 to look somewhat similar to the original game. A screenshot is attached below.
 
-![](Wolf3d_pc.png)
+![](img/Wolf3d_pc.png)
