@@ -1,8 +1,6 @@
-## Overview
+This project is supposed to be a Wolfenstein 3D Engine with some additional features.
 
-This project is supposed to be a Wolfenstein 3D Engine with some modifications.
-
-## Installation
+# Installation
 
 Building
 ``` 
