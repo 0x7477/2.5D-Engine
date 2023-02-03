@@ -19,7 +19,7 @@ Tile* Map::operator()(int x, int y)
     return &map[x + y*width];
 }
 
-void Map::generate(Game* game)
+void Map::generate()
 {
     for(int x = 0; x < width; x++)
     {

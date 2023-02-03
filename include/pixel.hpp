@@ -1,18 +1,11 @@
 #pragma once 
 typedef struct Pixel
 {    
-    Pixel(){
-        a = 255;
-    };
-
-
-    Pixel(int rgba)
-    {
-        r = (rgba & 0xFF0000) >>16;
-        g = (rgba & 0xFF00) >> 8;
-        b = (rgba & 0xFF);
-        a = 255;
-    };
+    /// @brief default constor
+    Pixel();
+    /// @brief create a color from integer with alpha 255
+    /// @param rgba first byte is red, second byte is green, third byte is blue, alpha is 255  
+    Pixel(int rgba);
 
     unsigned char r = 0;
     unsigned char g = 0;

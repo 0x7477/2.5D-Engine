@@ -12,7 +12,7 @@ Game::Game(int argc, char **argv)
 void Game::start()
 {
     readTextures("/home/kurt/Documents/DHBW/CG/resources");
-    map.generate(this);
+    map.generate();
 
     billboards = {{{2,2,0},"test"},{{20,10,0},"nazi"},{{8,8,0},"nazi"}};
     last_clock = clock();

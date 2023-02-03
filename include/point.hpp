@@ -29,7 +29,14 @@ public:
     WorldPoint(double x, double y, double z);
     WorldPoint operator+(const WorldPoint &p2) const;
     WorldPoint operator*(double scale) const;
+    /// @brief get the angle relative to the player
+    /// @param player the player
+    /// @return returns the angle relative to the player
     double getAngle(const Player* player) const;
+
+    /// @brief get the distance relative to the players position
+    /// @param player the player
+    /// @return returns the distance relative to the players position
     double getDistance(const Player* player) const;
 
     double x = 0, y = 0, z = 0;

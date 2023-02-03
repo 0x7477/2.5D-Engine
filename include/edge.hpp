@@ -24,9 +24,10 @@ public:
     /// @return z Length of the Edge
     float getDepth() const;
 
-    ScreenPoint p1,p2;
-    Triangle* t;
     /// @brief Draws the Spans between two edges
     /// @param edge2 
     void drawSpans(const Edge& edge2);
+    
+    ScreenPoint p1,p2;
+    Triangle* t;
 };
