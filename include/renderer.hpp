@@ -1,5 +1,4 @@
 #pragma once
-#include "point.hpp"
 class Game;
 class Mesh;
 class Billboard;

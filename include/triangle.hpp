@@ -2,7 +2,7 @@
 #include "screen.hpp"
 #include "edge.hpp"
 #include "pixel.hpp"
-#include "point.hpp"
+#include "screenpoint.hpp"
 
 /// @brief A screenspace triangle
 class Triangle

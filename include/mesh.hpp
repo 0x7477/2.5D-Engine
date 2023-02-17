@@ -2,7 +2,8 @@
 #include <vector>
 #include "triangle.hpp"
 #include "game.hpp"
-#include "point.hpp"
+#include "worldpoint.hpp"
+#include "quaternion.hpp"
 
 /// @brief A Mesh displayable in the game
 class Mesh

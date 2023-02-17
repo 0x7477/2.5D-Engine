@@ -30,7 +30,7 @@ void Map::generate()
             map[x + y * width].walkable = map[x + y * width].transparent;
 
             //apply the twi textures in a checkboard pattern 
-            map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"wall":"wall2"]);
+            map[x + y * width].texture = &(Game::textures[((x+y)%2==0)?"swastika":"wall2"]);
         }
     }
 }

@@ -1,6 +1,6 @@
 #include "billboard.hpp"
 #include "game.hpp"
-#include "point.hpp"
+#include "worldpoint.hpp"
 #include <iostream>
 
 Billboard::Billboard(WorldPoint pos, std::string texture, double width, double height)

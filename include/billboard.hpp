@@ -1,6 +1,6 @@
 #pragma once
 #include "texture.hpp"
-#include "point.hpp"
+#include "worldpoint.hpp"
 #include <string>
 
 class Player;

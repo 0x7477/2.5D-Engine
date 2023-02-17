@@ -1,7 +1,7 @@
 #include "player.hpp"
 #include "window_manager.hpp"
 #include "map.hpp"
-#include "point.hpp"
+#include "worldpoint.hpp"
 
 bool Player::isVisible(const WorldPoint& point) const
 {

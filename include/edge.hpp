@@ -1,5 +1,5 @@
 #pragma once
-#include "point.hpp"
+#include "screenpoint.hpp"
 
 class Triangle;
 
