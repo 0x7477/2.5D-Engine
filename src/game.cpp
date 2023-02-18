@@ -79,8 +79,8 @@ void Game::update()
     window_manager.draw();
 
     //transform objects
-    // meshes[0].transform.rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
-    // meshes[0].transform.scale = 0.2 + 0.1*sin(0.000001 * clock());
+    meshes[0].transform.rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
+    meshes[0].transform.scale = 0.2 + 0.1*sin(0.000001 * clock());
 }
 
 void Game::readTextures(std::string path)

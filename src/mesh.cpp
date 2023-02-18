@@ -21,17 +21,22 @@ void Mesh::draw()
 
     for(const auto& face : obj.faces)
     {
+        int p1 = face.indices[0].vertex;
+        int p2 = face.indices[1].vertex;
+        int p3 = face.indices[2].vertex;
         
+
+
         //apply transformations
-        WorldPoint w1 = world_points[face.indices[0].vertex];
-        WorldPoint w2 = world_points[face.indices[1].vertex];
-        WorldPoint w3 = world_points[face.indices[2].vertex];
+        WorldPoint w1 = world_points[p1];
+        WorldPoint w2 = world_points[p2];
+        WorldPoint w3 = world_points[p3];
 
         //check visibility
         if(!game->player.isVisible(w1) && !game->player.isVisible(w2) && !game->player.isVisible(w3)) continue;
 
         
         //draw triangle
-        Triangle{game,Color::white,w1,w2,w3}.draw();
+        Triangle{this,p1,p2,p3}.draw();
     }
 }

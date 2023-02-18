@@ -4,6 +4,8 @@
 #include "pixel.hpp"
 #include "worldpoint.hpp"
 
+class Mesh;
+
 /// @brief A screenspace triangle
 class Triangle
 {
@@ -14,8 +16,8 @@ public:
     /// @param p1 point one
     /// @param p2 point two
     /// @param p3 point three
-    Triangle(Game* game, Pixel color, const WorldPoint& p1, const WorldPoint& p2, const WorldPoint& p3);
-    /// @brief draws the tringle at the screen
+    Triangle(Mesh* mesh, int p1, int p2, int p3);
+    /// @brief draws the triangle at the screen
     void draw();
 
     
