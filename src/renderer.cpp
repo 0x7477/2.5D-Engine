@@ -66,6 +66,7 @@ void Renderer::renderWalls()
 
         //get sample
         double sample_x = getTextureSampleX(ray_x, ray_y);
+        auto texture = game->map((int)ray_x, (int)ray_y)->texture;
 
         for (int y = 0; y < screen->height; y++)
         {
@@ -77,10 +78,10 @@ void Renderer::renderWalls()
             double sample_y = (y - floor) / (double)(ceiling - floor);
 
             //get pixel of wall texture
-            int pixel_x = (int)(sample_x * 64);
-            int pixel_y = (int)(sample_y * 64);
+            int pixel_x = (int)(sample_x * texture->width);
+            int pixel_y = (int)(sample_y * texture->height);
 
-            Pixel sampled_pixel = (*game->map((int)ray_x, (int)ray_y)->texture)(pixel_x, pixel_y);
+            Pixel sampled_pixel = (*texture)(pixel_x, pixel_y);
 
             //draw pixel
             screen->setColor(x, y, (y < ceiling && y > floor) ? sampled_pixel : Color::ceiling);

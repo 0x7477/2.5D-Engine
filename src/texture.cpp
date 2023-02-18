@@ -6,13 +6,32 @@
 #include <iterator>
 #include <cstring>
 
-Texture::Texture()
+
+Texture::~Texture()
 {
+    for(auto x = 0ul; x < width; x++)
+        free(pixel[x]);
+    free(pixel);
+}
+
+Texture::Texture(int width,int height)
+:width{width},height{height}
+{
+    initMemory();
     checkboard(Color::black, Color::pink);
 };
 
-Texture::Texture(std::string path)
+void Texture::initMemory()
 {
+    pixel = (Pixel **) malloc(sizeof(Pixel*) * width);
+    for(auto x = 0ul; x < width; x++)
+        pixel[x] = (Pixel *) malloc(sizeof(Pixel) * height);
+}
+
+Texture::Texture(std::string path, int width,int height)
+:width{width},height{height}
+{
+    initMemory();
     std::ifstream file(path, std::ifstream::in);
     if(!file.is_open())
     {
@@ -24,17 +43,17 @@ Texture::Texture(std::string path)
     std::string data(std::istreambuf_iterator<char>{file}, {});
 
     //cut header
-    memcpy(&pixel,data.substr(0x46).c_str(), 64*64*4);
+    data = data.substr(0x46);
 
-    for(int x = 0; x < 64; x++)
-        for(int y = 0; y < 64; y++)
+    unsigned int index = 0;
+    for(int x = 0; x < width; x++)
+        for(int y = 0; y < height; y++)
         {
-            //swap colors, because gimp saves in a different format than OpenGL needs
-            unsigned char temp = pixel[x][y].r;
-            pixel[x][y].a = pixel[x][y].a;
-            pixel[x][y].g = pixel[x][y].g;
-            pixel[x][y].r = pixel[x][y].b;
-            pixel[x][y].b = temp;
+            pixel[y][x].a = data[index+3];
+            pixel[y][x].r = data[index+2];
+            pixel[y][x].g = data[index+1];
+            pixel[y][x].b = data[index];
+            index += 4;
         }
 }
 
@@ -70,5 +89,5 @@ void Texture::draw()
 
 Pixel Texture::operator()(int x, int y)
 {
-    return pixel[y][x];
+    return pixel[x][y];
 }

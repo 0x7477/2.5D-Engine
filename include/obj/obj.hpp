@@ -14,7 +14,6 @@ namespace OBJ
     std::vector<WorldPoint> loadOBJ(std::string path)
     {
         std::vector<WorldPoint> points{};
-        std::cout << path << "\n";
         std::ifstream obj_file(path);
 
         if(!obj_file.is_open()) return points;

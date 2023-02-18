@@ -65,14 +65,15 @@ clock_t Game::updateDeltaClock()
 }
 void Game::update()
 {
+
     //get delta time
     auto delta_time = updateDeltaClock();
 
     //move player
     player.move(&map, delta_time);
-
     //render scene
     renderer.render();
+
     //draw rendered image to window
     window_manager.draw();
 
@@ -89,12 +90,14 @@ void Game::readTextures(std::string path)
         std::cout << "no textures found at path: " << path << "\n";   
         return;
     }    
-    
+
     textures["test"] = Texture();
 
     for (const auto &file : std::filesystem::recursive_directory_iterator(path))
     {
         std::string filename = file.path().filename();
         textures[filename.substr(0, filename.find('.'))] = Texture(file.path());
+
+        textures[filename.substr(0, filename.find('.'))].draw();
     }
 }

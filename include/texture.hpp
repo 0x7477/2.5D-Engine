@@ -5,12 +5,14 @@
 /// @brief A texture for objects and walls
 class Texture
 {
+    private:
+    void initMemory();
     public:
-    Texture();
+    Texture(int width = 64,int height = 64);
     /// @brief loads a texture
     /// @param path the path of the texture
-    Texture(std::string path);
-
+    Texture(std::string path,int width = 64, int height = 64);
+    ~Texture();
     /// @brief get color at x and y position
     /// @param x the x chord
     /// @param y the y chord
@@ -28,6 +30,27 @@ class Texture
     void checkboard(Pixel color1,Pixel color2);
 
     
+    Texture(const Texture& other) // copy constructor
+    : pixel{other.pixel}, width{other.width}, height{other.height} {}
+ 
+ 
+    Texture(Texture&& other) noexcept // move constructor
+    : pixel(std::exchange(other.pixel, nullptr)),width{other.width}, height{other.height} {}
+ 
+    Texture& operator=(const Texture& other) // copy assignment
+    {
+        return *this = Texture(other);
+    }
+ 
+    Texture& operator=(Texture&& other) noexcept // move assignment
+    {
+        std::swap(pixel, other.pixel);
+        width = other.width;
+        height = other.height;
+        return *this;
+    }
     /// @brief The Buffer is set to constant 64x64 Pixel
-    Pixel pixel[64][64] = {};    
+    Pixel** pixel;
+
+    int width, height;
 };
