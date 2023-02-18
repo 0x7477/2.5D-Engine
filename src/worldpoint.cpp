@@ -17,16 +17,56 @@ WorldPoint WorldPoint::operator-(const WorldPoint &p2) const
     return {x - p2.x, y - p2.y, z - p2.z};
 }
 
-WorldPoint WorldPoint::crossProduct(const WorldPoint &p1,const WorldPoint &p2)
+WorldPoint WorldPoint::crossProduct(const WorldPoint &p1, const WorldPoint &p2)
 {
     return {p1.y * p2.z - p1.z * p2.y, p1.z * p2.x - p1.x * p2.z, p1.x * p2.y - p1.y * p2.x};
 }
 
-WorldPoint WorldPoint::getNormalizedNormalVector(WorldPoint p1, WorldPoint p2)
+WorldPoint WorldPoint::getNormalizedNormalVector(WorldPoint p1, WorldPoint p2) const
 {
     WorldPoint vec1 = p1 - *this;
     WorldPoint vec2 = p2 - *this;
 
+    WorldPoint normal = crossProduct(p1, p2);
+    normal.normalize();
+
+    return normal;
+}
+float WorldPoint::getLength() const
+{
+    return x * x + y * y + z * z;
+}
+
+float inverseSquareRoot(const float number)
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y = number;
+    i = *(long *)&y;           // evil floating point bit level hacking
+    i = 0x5f3759df - (i >> 1); // what the fuck?
+    y = *(float *)&i;
+    y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+                                         //	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+
+    return y;
+}
+
+void WorldPoint::normalize()
+{
+    float length = getLength();
+
+    float normalization_length = inverseSquareRoot(length);
+
+    x *= normalization_length;
+    y *= normalization_length;
+    z *= normalization_length;
+}
+double WorldPoint::operator*(const WorldPoint &p2) const
+{
+    return x * p2.x + y * p2.y + z * p2.z;
 }
 
 WorldPoint WorldPoint::operator*(double scale) const

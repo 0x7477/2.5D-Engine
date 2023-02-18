@@ -1,10 +1,18 @@
 #include "mesh.hpp"
-#include <iostream>
+#include "obj/obj.hpp"
 
 
-Mesh::Mesh(Game* game, std::vector<Pixel> colors, const WorldPoint& pos,Quaternion rot,  double scale , std::vector<WorldPoint> vertices)
+Mesh::Mesh(Game* game, std::vector<Pixel> colors, const WorldPoint& pos,const Quaternion& rot,  double scale , std::vector<WorldPoint> vertices)
 :game{game},pos{pos},rot{rot},scale{scale}, colors{colors},vertices{vertices}{};
 
+
+
+
+Mesh::Mesh(Game *game, std::string path,std::vector<Pixel> colors, const WorldPoint &pos,const Quaternion& rot, double scale)
+:game{game},pos{pos},rot{rot},scale{scale},colors{colors},vertices{OBJ::loadOBJ(path)}
+{
+
+}
 
 void Mesh::draw() const
 {
@@ -18,12 +26,7 @@ void Mesh::draw() const
         //check visibility
         if(!game->player.isVisible(w1) && !game->player.isVisible(w2) && !game->player.isVisible(w3)) continue;
 
-        //convert two screen pos
-        ScreenPoint p1{game, w1};
-        ScreenPoint p2{game, w2};
-        ScreenPoint p3{game, w3};
-
         //draw triangle
-        Triangle{game->window_manager.screen, colors[i],p1,p2,p3}.draw();
+        Triangle{game, colors[i],w1,w2,w3}.draw();
     }
 }

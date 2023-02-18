@@ -1,5 +1,6 @@
 #include "edge.hpp"
 #include "span.hpp"
+#include "game.hpp"
 
 Edge::Edge(Triangle* t,const ScreenPoint& p1_, const ScreenPoint& p2_)
 :t{t}

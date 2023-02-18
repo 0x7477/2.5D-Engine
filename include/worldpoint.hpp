@@ -13,11 +13,13 @@ public:
     WorldPoint operator+(const WorldPoint &p2) const;
     WorldPoint operator-(const WorldPoint &p2) const;
     WorldPoint operator*(double scale) const;
+    double operator*(const WorldPoint &p2) const;
 
     static WorldPoint crossProduct(const WorldPoint &p1,const WorldPoint &p2);
 
-
-    WorldPoint getNormalizedNormalVector(WorldPoint p1, WorldPoint p2);
+    float getLength() const;
+    void normalize();
+    WorldPoint getNormalizedNormalVector(WorldPoint p1, WorldPoint p2) const;
     /// @brief get the angle relative to the player
     /// @param player the player
     /// @return returns the angle relative to the player

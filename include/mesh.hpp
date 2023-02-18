@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "triangle.hpp"
 #include "game.hpp"
 #include "worldpoint.hpp"
@@ -10,11 +11,11 @@ class Mesh
 {
 
 public:
-    Mesh(Game* game, std::vector<Pixel> colors, const WorldPoint& pos,Quaternion rot,  double scale, std::vector<WorldPoint> vertices);
+    Mesh(Game *game, std::vector<Pixel> colors, const WorldPoint &pos,const Quaternion& rot, double scale, std::vector<WorldPoint> vertices);
+    Mesh(Game *game, std::string path,std::vector<Pixel> colors, const WorldPoint &pos,const Quaternion& rot, double scale);
     /// @brief draw the Mesh
     void draw() const;
-
-    Game* game;
+    Game *game;
     WorldPoint pos;
     Quaternion rot;
     double scale;

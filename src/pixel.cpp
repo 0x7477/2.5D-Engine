@@ -15,3 +15,15 @@ Pixel::Pixel(int rgba)
     b = (rgba & 0xFF);
     a = 255;
 }
+
+void Pixel::setBrightness(float brightness)
+{
+    r = (unsigned char)((float)r * brightness);
+    g = (unsigned char)((float)g * brightness);
+    b = (unsigned char)((float)b * brightness);
+}
+
+std::ostream &operator<<(std::ostream &os, const Pixel &p)
+{
+    return os << "(" << (int)p.r << "," << (int)p.g << "," << (int)p.b << "," << (int)p.a << ")";
+}

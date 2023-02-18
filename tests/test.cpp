@@ -3,6 +3,8 @@
 
 #include "quaternion.hpp"
 #include "worldpoint.hpp"
+#include "pixel.hpp"
+#include "directional_light.hpp"
 
 
 TEST_CASE("Quaternion")
@@ -14,3 +16,23 @@ TEST_CASE("Quaternion")
 
     REQUIRE((p1.x == p2.x && p1.y == p2.y && p1.z == p2.z));
 }
+
+TEST_CASE("Color")
+{
+    Pixel p{0xFF0000};
+
+    p.setBrightness(1);
+
+
+    REQUIRE((p.r == 255));
+    REQUIRE((p.g == 0));
+    REQUIRE((p.b == 0));
+
+
+}
+
+TEST_CASE("Lighting")
+{
+    
+}
+

@@ -8,6 +8,7 @@ class Edge
 {
 public:
 
+    Edge() = default;
     /// @brief Initialize an Edge
     /// @param t A pointer to the corresponding Triangle
     /// @param p1 point 1
