@@ -2,7 +2,7 @@
 #define CONFIG_CATCH_MAIN
 
 #include "quaternion.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 #include "pixel.hpp"
 #include "directional_light.hpp"
 

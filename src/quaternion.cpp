@@ -1,5 +1,5 @@
 #include "quaternion.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 #include <cmath>
 
 std::ostream &operator<<(std::ostream &os, const Quaternion &p)

@@ -2,7 +2,7 @@
 #include "screen.hpp"
 #include "edge.hpp"
 #include "pixel.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 
 class Mesh;
 
@@ -16,7 +16,7 @@ public:
     /// @param p1 point one
     /// @param p2 point two
     /// @param p3 point three
-    Triangle(Mesh* mesh, int p1, int p2, int p3);
+    Triangle(Mesh* mesh, int p[3], int uv[3]);
     /// @brief draws the triangle at the screen
     void draw();
 

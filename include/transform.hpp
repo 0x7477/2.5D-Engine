@@ -1,6 +1,6 @@
 #pragma once
 
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 #include "quaternion.hpp"
 
 class Transform

@@ -3,7 +3,7 @@
 #include <string>
 #include "triangle.hpp"
 #include "game.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 #include "quaternion.hpp"
 #include "transform.hpp"
 #include "texture.hpp"
@@ -24,6 +24,7 @@ public:
 
     std::vector<WorldPoint> world_points;
     std::vector<ScreenPoint> screen_points;
+    std::vector<UVPoint> uv_points;
 
     OBJ::OBJ obj;
 };

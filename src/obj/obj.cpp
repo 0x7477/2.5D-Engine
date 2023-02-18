@@ -26,7 +26,7 @@ OBJ::OBJ::OBJ(std::string path)
             vertex_normals.push_back(VertexNormal(line));
             break;
         case ('v'*256+ 't'):
-            // texture_verticies.push_back(OBJ::TextureVertex(line));
+            texture_vertices.push_back(TextureVertex(line));
             break;
         case ('f'*256+ ' '):
             faces.push_back(Face(line));

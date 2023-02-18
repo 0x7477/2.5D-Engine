@@ -1,5 +1,5 @@
 #pragma once
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 
 class DirectionalLight
 {

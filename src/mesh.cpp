@@ -6,8 +6,11 @@
 Mesh::Mesh(Game *game, std::string path, const Transform& transform)
 :game{game},transform{transform},texture{Texture(path+"/uv.bmp")},obj{path+"/model.obj"} 
 {
-    world_points = std::vector<WorldPoint>{obj.vertexes.size()+1};
-    screen_points = std::vector<ScreenPoint>{obj.vertexes.size()+1};
+    world_points = std::vector<WorldPoint>{obj.vertexes.size()};
+    screen_points = std::vector<ScreenPoint>{obj.vertexes.size()};
+
+    for(const auto & p: obj.texture_vertices)
+        uv_points.push_back(p);
 }
 
 void Mesh::draw()
@@ -21,22 +24,20 @@ void Mesh::draw()
 
     for(const auto& face : obj.faces)
     {
-        int p1 = face.indices[0].vertex;
-        int p2 = face.indices[1].vertex;
-        int p3 = face.indices[2].vertex;
         
+        int p[3]= {face.indices[0].vertex,face.indices[1].vertex,face.indices[2].vertex};
+        int uvs[3]= {face.indices[0].vertexTexture, face.indices[1].vertexTexture, face.indices[2].vertexTexture};
 
 
         //apply transformations
-        WorldPoint w1 = world_points[p1];
-        WorldPoint w2 = world_points[p2];
-        WorldPoint w3 = world_points[p3];
+        WorldPoint w1 = world_points[p[0]];
+        WorldPoint w2 = world_points[p[1]];
+        WorldPoint w3 = world_points[p[2]];
 
         //check visibility
         if(!game->player.isVisible(w1) && !game->player.isVisible(w2) && !game->player.isVisible(w3)) continue;
 
-        
         //draw triangle
-        Triangle{this,p1,p2,p3}.draw();
+        Triangle{this,p, uvs}.draw();
     }
 }

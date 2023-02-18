@@ -3,7 +3,7 @@
 #include "vertex_normal.hpp"
 #include "vertex.hpp"
 #include "texture_vertex.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 
 #include <vector>
 #include <string>
@@ -17,7 +17,7 @@ namespace OBJ
 
         std::vector<Vertex> vertexes{};
         std::vector<VertexNormal> vertex_normals{};
-        std::vector<TextureVertex> texture_verticies{};
+        std::vector<TextureVertex> texture_vertices{};
         std::vector<Face> faces{};
     };
 }

@@ -4,14 +4,15 @@
 #include <iostream>
 
 
-Triangle::Triangle(Mesh* mesh, int p1, int p2, int p3)
+Triangle::Triangle(Mesh* mesh, int p[3], int uv[3])
 :screen{mesh->game->window_manager.screen}, color{Color::white}
 {
     auto screen_points = mesh->screen_points;
+    auto uv_points = mesh->uv_points;
 
-    edges[0] = Edge(this, screen_points[p1], screen_points[p2]);
-    edges[1] = Edge(this, screen_points[p2], screen_points[p3]);
-    edges[2] = Edge(this, screen_points[p3], screen_points[p1]);
+    edges[0] = Edge(this, screen_points[p[0]], screen_points[p[1]], uv_points[uv[0]], uv_points[uv[1]]);
+    edges[1] = Edge(this, screen_points[p[1]], screen_points[p[2]], uv_points[uv[1]], uv_points[uv[2]]);
+    edges[2] = Edge(this, screen_points[p[2]], screen_points[p[0]], uv_points[uv[2]], uv_points[uv[0]]);
 
     //lets get longest Edge
     if(edges[0].getLength() > edges[1].getLength())

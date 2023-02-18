@@ -1,7 +1,7 @@
-#include "screenpoint.hpp"
+#include "screen_point.hpp"
 #include "renderer.hpp"
 #include "game.hpp"
-#include "worldpoint.hpp"
+#include "world_point.hpp"
 
 
 ScreenPoint::ScreenPoint() {}

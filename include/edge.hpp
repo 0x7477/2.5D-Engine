@@ -1,5 +1,6 @@
 #pragma once
-#include "screenpoint.hpp"
+#include "screen_point.hpp"
+#include "uv_point.hpp"
 
 class Triangle;
 
@@ -13,7 +14,7 @@ public:
     /// @param t A pointer to the corresponding Triangle
     /// @param p1 point 1
     /// @param p2 point 2
-    Edge(Triangle* t, const ScreenPoint& p1, const ScreenPoint& p2);
+    Edge(Triangle* t, const ScreenPoint& p1, const ScreenPoint& p2,const UVPoint& uv1, const UVPoint& uv2);
 
     /// @brief get y Length of the Edge
     /// @return y Length of the Edge
@@ -30,5 +31,7 @@ public:
     void drawSpans(const Edge& edge2);
     
     ScreenPoint p1,p2;
+    UVPoint uv1,uv2;
+
     Triangle* t;
 };
