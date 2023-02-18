@@ -59,15 +59,15 @@ Texture::Texture(std::string path, int width,int height)
 
 void Texture::checkboard(Pixel color1,Pixel color2)
 {
-    for(int x = 0; x < 64; x++)
-        for(int y = 0; y < 64; y++)
+    for(int x = 0; x < width; x++)
+        for(int y = 0; y < height; y++)
             pixel[x][y] = (x+y)%2?color1:color2;
 }
 
 void Texture::fill(Pixel color)
 {
-    for(int x = 0; x < 64; x++)
-        for(int y = 0; y < 64; y++)
+    for(int x = 0; x < width; x++)
+        for(int y = 0; y < height; y++)
             pixel[x][y] = color;
 }
 
@@ -78,9 +78,9 @@ void drawPixel(int r, int g, int b)
 
 void Texture::draw()
 {
-    for(int x = 0; x < 64; x++)
+    for(int x = 0; x < width; x++)
     {
-        for(int y = 0; y < 64; y++)
+        for(int y = 0; y < height; y++)
             drawPixel(pixel[x][y].r,pixel[x][y].g,pixel[x][y].b);
 
         std::cout << "\033[0m\n";

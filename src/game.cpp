@@ -12,7 +12,7 @@ Game::Game(int argc, char **argv)
 void Game::start()
 {
     //setup the games ressources
-    readTextures("resources");
+    readTextures("resources/textures");
     map.generate();
 
     // create some billboards
