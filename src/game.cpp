@@ -97,7 +97,5 @@ void Game::readTextures(std::string path)
     {
         std::string filename = file.path().filename();
         textures[filename.substr(0, filename.find('.'))] = Texture(file.path());
-
-        textures[filename.substr(0, filename.find('.'))].draw();
     }
 }

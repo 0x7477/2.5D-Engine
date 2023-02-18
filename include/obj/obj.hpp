@@ -1,6 +1,7 @@
 #include "face.hpp"
 #include "vertex_normal.hpp"
 #include "vertex.hpp"
+#include "texture_vertex.hpp"
 #include "worldpoint.hpp"
 #include <vector>
 
@@ -22,6 +23,7 @@ namespace OBJ
 
         std::vector<OBJ::Vertex> vertexes{};
         std::vector<OBJ::VertexNormal> vertex_normals{};
+        std::vector<OBJ::TextureVertex> texture_verticies{};
         std::vector<OBJ::Face> faces{};
 
         while (std::getline(obj_file, line))
@@ -35,6 +37,9 @@ namespace OBJ
                 break;
             case ('v'*256+ 'n'):
                 vertex_normals.push_back(OBJ::VertexNormal(line));
+                break;
+            case ('v'*256+ 't'):
+                texture_verticies.push_back(OBJ::TextureVertex(line));
                 break;
             case ('f'*256+ ' '):
                 faces.push_back(OBJ::Face(line));
