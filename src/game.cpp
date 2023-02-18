@@ -23,7 +23,7 @@ void Game::start()
     last_clock = clock();
 
 
-    Mesh dice{this, "resources/models/dice/dice.obj",{0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000,0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{{5,5,0.5}, Quaternion::identity,0.5}};
+    Mesh dice{this, "resources/models/dice",{{5,5,0.5}, Quaternion::identity,0.5}};
     meshes.push_back(dice);
 
 
@@ -79,8 +79,8 @@ void Game::update()
     window_manager.draw();
 
     //transform objects
-    meshes[0].transform.rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
-    meshes[0].transform.scale = 0.2 + 0.1*sin(0.000001 * clock());
+    // meshes[0].transform.rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
+    // meshes[0].transform.scale = 0.2 + 0.1*sin(0.000001 * clock());
 }
 
 void Game::readTextures(std::string path)

@@ -167,7 +167,7 @@ double Renderer::map(double x, double in_min, double in_max, double out_min, dou
 
 void Renderer::renderMeshes()
 {
-    for(const auto& mesh: game->meshes)
+    for(auto& mesh: game->meshes)
         mesh.draw();
 }
 

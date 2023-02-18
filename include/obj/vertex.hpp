@@ -1,20 +1,16 @@
 #pragma once
 #include <string>
 #include <ostream>
+#include "worldpoint.hpp"
 namespace OBJ
 {
     class Vertex
     {
         public:
-        Vertex(std::string data)
-        {
-            std::sscanf(data.c_str(), "v %lf %lf %lf %lf", &x, &y, &z, &w);
-        }
-        double x,y,z,w = 1;
+        Vertex(std::string data);
+        WorldPoint p;
     };
 
-    std::ostream &operator<<(std::ostream &os, const OBJ::Vertex &v)
-    {
-        return os << "(" << v.x << "," << v.y << "," << v.z << ")";
-    }
 }
+
+std::ostream &operator<<(std::ostream &os, const OBJ::Vertex &v);
