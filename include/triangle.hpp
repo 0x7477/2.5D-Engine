@@ -1,7 +1,7 @@
 #pragma once
 #include "screen.hpp"
 #include "edge.hpp"
-#include "pixel.hpp"
+#include "texture.hpp"
 #include "world_point.hpp"
 
 class Mesh;
@@ -24,5 +24,5 @@ public:
     Edge edges[3];
     Screen* screen;
     int long_edge, short_edge1, short_edge2;
-    Pixel color;
+    Texture* texture;
 };

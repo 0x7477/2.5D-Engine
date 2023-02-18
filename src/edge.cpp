@@ -57,8 +57,15 @@ void Edge::drawSpans(const Edge &edge2)
 		float z1 = p1.z + getDepth() * factor1;
 		float z2 = edge2.p1.z + edge2.getDepth() * factor2;
 
+		double uv1_u = uv1.u + (uv2.u - uv1.u) * factor1;
+		double uv1_v = uv1.v + (uv2.v - uv1.v) * factor1;
+
+		double uv2_u = edge2.uv1.u + (edge2.uv2.u - edge2.uv1.u) * factor2;
+		double uv2_v = edge2.uv1.v + (edge2.uv2.v - edge2.uv1.v) * factor2;
+
+
 		// create and draw span
-		Span span(t, x1, z1, x2, z2);
+		Span span(t, x1, z1, x2, z2, {uv1_u, uv1_v},{uv2_u, uv2_v});
 
 		// increase factors
 		factor1 += factorStep1;

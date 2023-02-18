@@ -13,7 +13,7 @@ Game::Game(int argc, char **argv)
 void Game::start()
 {
     //setup the games ressources
-    readTextures("resources/textures");
+    readTextures("resources/");
     map.generate();
 
     // create some billboards
@@ -95,7 +95,10 @@ void Game::readTextures(std::string path)
 
     for (const auto &file : std::filesystem::recursive_directory_iterator(path))
     {
+        if(file.path().extension() != ".bmp") continue;
+
         std::string filename = file.path().filename();
         textures[filename.substr(0, filename.find('.'))] = Texture(file.path());
+
     }
 }

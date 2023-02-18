@@ -9,6 +9,7 @@ class UVPoint
 
 public:
     UVPoint();
+    UVPoint(double u, double v);
     UVPoint(OBJ::TextureVertex uv);
     double u = 0, v = 0;
 };

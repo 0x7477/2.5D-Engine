@@ -27,7 +27,7 @@ WorldPoint WorldPoint::getNormalizedNormalVector(WorldPoint p1, WorldPoint p2) c
     WorldPoint vec1 = p1 - *this;
     WorldPoint vec2 = p2 - *this;
 
-    WorldPoint normal = crossProduct(p1, p2);
+    WorldPoint normal = crossProduct(vec1, vec2);
     normal.normalize();
 
     return normal;

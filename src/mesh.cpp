@@ -2,9 +2,16 @@
 #include "obj/obj.hpp"
 #include "colors.hpp"
 
+#include <iostream>
+#include <filesystem>
+
+std::string getUVName(std::string path)
+{
+    return std::filesystem::path(path).filename().string() + "_uv";
+}
 
 Mesh::Mesh(Game *game, std::string path, const Transform& transform)
-:game{game},transform{transform},texture{Texture(path+"/uv.bmp")},obj{path+"/model.obj"} 
+:game{game},transform{transform},texture{&(Game::textures[getUVName(path)])},obj{path+"/model.obj"} 
 {
     world_points = std::vector<WorldPoint>{obj.vertexes.size()};
     screen_points = std::vector<ScreenPoint>{obj.vertexes.size()};
@@ -38,6 +45,7 @@ void Mesh::draw()
         if(!game->player.isVisible(w1) && !game->player.isVisible(w2) && !game->player.isVisible(w3)) continue;
 
         //draw triangle
+
         Triangle{this,p, uvs}.draw();
     }
 }

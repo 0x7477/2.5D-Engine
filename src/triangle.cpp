@@ -5,8 +5,9 @@
 
 
 Triangle::Triangle(Mesh* mesh, int p[3], int uv[3])
-:screen{mesh->game->window_manager.screen}, color{Color::white}
+:screen{mesh->game->window_manager.screen}, texture{mesh->texture}
 {
+
     auto screen_points = mesh->screen_points;
     auto uv_points = mesh->uv_points;
 

@@ -8,10 +8,10 @@ class Texture
     private:
     void initMemory();
     public:
-    Texture(int width = 64,int height = 64);
+    Texture(unsigned int width = 64,unsigned int height = 64);
     /// @brief loads a texture
     /// @param path the path of the texture
-    Texture(std::string path,int width = 64, int height = 64);
+    Texture(std::string path);
     ~Texture();
     /// @brief get color at x and y position
     /// @param x the x chord
@@ -31,11 +31,11 @@ class Texture
 
     
     Texture(const Texture& other) // copy constructor
-    : pixel{other.pixel}, width{other.width}, height{other.height} {}
- 
+    : width{other.width}, height{other.height}, pixel{other.pixel} {}
  
     Texture(Texture&& other) noexcept // move constructor
-    : pixel(std::exchange(other.pixel, nullptr)),width{other.width}, height{other.height} {}
+    : width{other.width}, height{other.height},pixel(std::exchange(other.pixel, nullptr)) {    }
+
  
     Texture& operator=(const Texture& other) // copy assignment
     {
@@ -44,13 +44,14 @@ class Texture
  
     Texture& operator=(Texture&& other) noexcept // move assignment
     {
+        std::swap(height, other.height);
+        std::swap(width, other.width);
         std::swap(pixel, other.pixel);
-        width = other.width;
-        height = other.height;
+
         return *this;
     }
+
+    unsigned int width, height;
     /// @brief The Buffer is set to constant 64x64 Pixel
     Pixel** pixel;
-
-    int width, height;
 };

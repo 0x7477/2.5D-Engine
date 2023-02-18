@@ -20,7 +20,7 @@ public:
     void draw();
     Game *game;
     Transform transform;
-    Texture texture;
+    Texture* texture;
 
     std::vector<WorldPoint> world_points;
     std::vector<ScreenPoint> screen_points;
