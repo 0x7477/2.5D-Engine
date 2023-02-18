@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "colors.hpp"
 #include "renderer.hpp"
+#include "transform.hpp"
 #include <ctime>
 
 #include <iostream>
@@ -22,37 +23,37 @@ void Game::start()
     last_clock = clock();
 
 
-    Mesh dice{this, "/home/kurt/Desktop/dice.obj",{0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000,0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, Quaternion::identity,0.5};
+    Mesh dice{this, "resources/models/dice/dice.obj",{0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000,0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{{5,5,0.5}, Quaternion::identity,0.5}};
     meshes.push_back(dice);
 
 
     // Mesh cube2{this, "/home/kurt/Desktop/untitled.obj",{0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000,0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, Quaternion::identity,0.5};
     // meshes.push_back(cube2);
 
-    //add cube to the scene
-    Mesh cube{this,  {0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, Quaternion::identity,0.5, 
-        {
-            {1,1,-1}, {1,-1,-1}, {-1,1,-1},
-            {-1,-1,-1}, {1,-1,-1}, {-1,1,-1},
-            {1,1,1}, {-1,1,1}, {1,-1,1},
-            {-1,-1,1}, {-1,1,1}, {1,-1,1},
-            {1,-1,1}, {1,-1,-1}, {-1,-1,-1},
-            {1,-1,1}, {-1,-1,-1}, {-1,-1,1},
-            {1,1,1}, {1,1,-1}, {-1,1,-1},
-            {1,1,1}, {-1,1,-1}, {-1,1,1},
-            {1,-1,1}, {1,-1,-1}, {1,1,-1},
-            {1,-1,1}, {1,1,1}, {1,1,-1},
-            {-1,-1,1}, {-1,-1,-1}, {-1,1,-1},
-            {-1,-1,1}, {-1,1,1}, {-1,1,-1},
-        }
-    };
+    // //add cube to the scene
+    // Mesh cube{this,  {0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, Quaternion::identity,0.5, 
+    //     {
+    //         {1,1,-1}, {1,-1,-1}, {-1,1,-1},
+    //         {-1,-1,-1}, {1,-1,-1}, {-1,1,-1},
+    //         {1,1,1}, {-1,1,1}, {1,-1,1},
+    //         {-1,-1,1}, {-1,1,1}, {1,-1,1},
+    //         {1,-1,1}, {1,-1,-1}, {-1,-1,-1},
+    //         {1,-1,1}, {-1,-1,-1}, {-1,-1,1},
+    //         {1,1,1}, {1,1,-1}, {-1,1,-1},
+    //         {1,1,1}, {-1,1,-1}, {-1,1,1},
+    //         {1,-1,1}, {1,-1,-1}, {1,1,-1},
+    //         {1,-1,1}, {1,1,1}, {1,1,-1},
+    //         {-1,-1,1}, {-1,-1,-1}, {-1,1,-1},
+    //         {-1,-1,1}, {-1,1,1}, {-1,1,-1},
+    //     }
+    // };
 
-    // meshes.push_back(cube);
+    // // meshes.push_back(cube);
 
-    // add traingle to the game
-    Mesh triangle{this,  {0xFF0000},{3,3,0}, Quaternion::identity,1, {{-0.5,0,0}, {.5,0,0}, {0,0,0.5}}};
+    // // add traingle to the game
+    // Mesh triangle{this,  {0xFF0000},{3,3,0}, Quaternion::identity,1, {{-0.5,0,0}, {.5,0,0}, {0,0,0.5}}};
 
-    meshes.push_back(triangle);
+    // meshes.push_back(triangle);
 
 
 }
@@ -78,9 +79,8 @@ void Game::update()
     window_manager.draw();
 
     //transform objects
-    meshes[0].rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
-    meshes[0].scale = 0.2 + 0.1*sin(0.000001 * clock());
-    meshes[1].rot = {0,0, 0.000001 * clock()};
+    meshes[0].transform.rot = {0.000001 * clock(), 0.000001 * clock(),0.000001 * clock()};
+    meshes[0].transform.scale = 0.2 + 0.1*sin(0.000001 * clock());
 }
 
 void Game::readTextures(std::string path)

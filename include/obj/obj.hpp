@@ -39,7 +39,7 @@ namespace OBJ
                 vertex_normals.push_back(OBJ::VertexNormal(line));
                 break;
             case ('v'*256+ 't'):
-                texture_verticies.push_back(OBJ::TextureVertex(line));
+                // texture_verticies.push_back(OBJ::TextureVertex(line));
                 break;
             case ('f'*256+ ' '):
                 faces.push_back(OBJ::Face(line));

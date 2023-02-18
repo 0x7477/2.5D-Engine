@@ -5,6 +5,7 @@
 
 class Transform
 {
+    public:
     Transform(const WorldPoint& pos, const Quaternion& rot, double scale);
     WorldPoint pos;
     Quaternion rot;

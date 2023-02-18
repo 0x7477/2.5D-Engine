@@ -24,7 +24,7 @@ Triangle::Triangle(Game* game,Pixel color, const WorldPoint& w1, const WorldPoin
     //let's include lighting
     WorldPoint normal = w1.getNormalizedNormalVector(w2,w3);
 
-    float light_intensity = 0.5 * (1+(game->light.getDirection() * normal));
+    float light_intensity = 0.5f * (float)(1+(game->light.getDirection() * normal));
 
     this->color.setBrightness(light_intensity);
 
