@@ -99,7 +99,18 @@ void Texture::draw()
     }
 }
 
-Pixel Texture::operator()(int x, int y)
+Pixel Texture::operator()(const int& x, const int& y) const
 {
     return pixel[x][y];
+}
+
+
+Pixel Texture::operator()(const float& x, const float& y) const
+{
+    return pixel[(int)(x*(width-1))][(int)(y*(height-1))];
+}
+
+Pixel Texture::operator()(const double& x, const double& y) const
+{
+    return pixel[(int)(x*(width-1))][(int)(y*(height-1))];
 }

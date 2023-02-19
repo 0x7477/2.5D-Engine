@@ -49,7 +49,7 @@ void Edge::drawSpans(const Edge &edge2)
 	float factor2 = 0;
 	float factorStep2 = 1.0f / edge2.getLength();
 
-	for (int y = edge2.p1.y; y < edge2.p2.y; y++)
+	for (int y = edge2.p1.y; y <= edge2.p2.y; y++)
 	{
 		int x1 = p1.x + (int)(getWidth() * factor1);
 		int x2 = edge2.p1.x + (int)(edge2.getWidth() * factor2);

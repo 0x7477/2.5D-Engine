@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cmath>
-#include "map.hpp"
+#include "world_point.hpp"
 
 class WorldPoint;
+class Map;
 
 /// @brief The Player object
 class Player
@@ -27,6 +28,7 @@ public:
     //The players field of view
     double field_of_view = 100 * M_PI / 360.0;
 
+    WorldPoint view;
     //the turn and movement speed
     double turn_speed = 0.000003;
     double movement_speed = 0.00001;

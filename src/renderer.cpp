@@ -74,17 +74,25 @@ void Renderer::renderWalls()
             if (distance > screen->getDepth(x, y))
                 continue;
 
-            //sample the y chord
-            double sample_y = (y - floor) / (double)(ceiling - floor);
+            Pixel color;
+            if(y < ceiling && y > floor)
+            {
 
-            //get pixel of wall texture
-            int pixel_x = (int)(sample_x * texture->width);
-            int pixel_y = (int)(sample_y * texture->height);
+                //sample the y chord
+                double sample_y = (y - floor) / (double)(ceiling - floor);
 
-            Pixel sampled_pixel = (*texture)(pixel_x, pixel_y);
+                color = (*texture)(sample_x, sample_y);
+                color.setBrightness(1- std::min(distance/32.0,0.5));
+            }
+            else
+            {
+                color = Color::ceiling;
+
+            }
+
 
             //draw pixel
-            screen->setColor(x, y, (y < ceiling && y > floor) ? sampled_pixel : Color::ceiling);
+            screen->setColor(x, y, color);
             screen->setDepth(x, y, (float)distance);
         }
     }

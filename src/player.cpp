@@ -39,6 +39,8 @@ void Player::move(Map* map, double deltaTime)
         pos_x = new_pos_x;
         pos_y = new_pos_y;
     }
+
+    view = {sin(angle),cos(angle),0};
 }
 
 Player::Player(){}

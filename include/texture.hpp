@@ -17,7 +17,9 @@ class Texture
     /// @param x the x chord
     /// @param y the y chord
     /// @return the color at given location
-    Pixel operator()(int x, int y);
+    Pixel operator()(const int& x, const int& y) const;
+    Pixel operator()(const float& x, const float& y) const;
+    Pixel operator()(const double& x, const double& y) const;
     /// @brief draws the texture in the terminal
     void draw();
     /// @brief fills the Texture with a solid color
