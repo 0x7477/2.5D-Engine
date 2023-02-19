@@ -25,4 +25,5 @@ public:
     Screen* screen;
     int long_edge, short_edge1, short_edge2;
     Texture* texture;
+    float light_intensity = 1;
 };

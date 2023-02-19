@@ -9,6 +9,7 @@ Triangle::Triangle(Mesh* mesh, int p[3], int uv[3])
 {
 
     auto screen_points = mesh->screen_points;
+    auto world_points = mesh->world_points;
     auto uv_points = mesh->uv_points;
 
     edges[0] = Edge(this, screen_points[p[0]], screen_points[p[1]], uv_points[uv[0]], uv_points[uv[1]]);
@@ -25,11 +26,9 @@ Triangle::Triangle(Mesh* mesh, int p[3], int uv[3])
     short_edge2 = (long_edge + 2) % 3;
 
     //let's include lighting
-    // WorldPoint normal = w1.getNormalizedNormalVector(w2,w3);
+    WorldPoint normal = world_points[p[0]].getNormalizedNormalVector(world_points[p[1]],world_points[p[2]]);
 
-    // float light_intensity = 0.5f * (float)(1+(game->light.getDirection() * normal));
-
-    // this->color.setBrightness(light_intensity);
+    light_intensity = 0.5f * (float)(1+(mesh->game->light.getDirection() * normal));
 }
 
 void Triangle::draw()

@@ -57,9 +57,12 @@ void Span::draw(int y)
 		int sample_y = (int)(v * (t->texture->height-1));
 
 
+		Pixel texture_sample = (*t->texture)(sample_x,sample_y);
+
+		texture_sample.setBrightness(t->light_intensity);
 		// std::cout << sample_x << " "<< sample_y << "\n";
 // 
-        t->screen->setColor(x,y,(*t->texture)(sample_x,sample_y));
+        t->screen->setColor(x,y,texture_sample);
         t->screen->setDepth(x,y,depth);
 	}
 }
