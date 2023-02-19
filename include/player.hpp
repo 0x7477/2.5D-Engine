@@ -22,7 +22,7 @@ public:
     bool isVisible(const WorldPoint& point) const;
 
     //The players position
-    double pos_x= 2.4, pos_y= 6.5, pos_z;
+    double pos_x=2, pos_y=1, pos_z;
     //The players rotation
     double angle = M_PI - 1;
     //The players field of view

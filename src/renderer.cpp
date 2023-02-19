@@ -53,20 +53,28 @@ double Renderer::getTextureSampleX(double ray_x, double ray_y)
 void Renderer::renderWalls()
 {
     auto screen = game->window_manager.screen;
+    auto player = game->player;
+
+    auto floor_texture = &Game::textures["floor"];
 
     double ray_x, ray_y;
     for (int x = 0; x < screen->width; x++)
     {
+        const auto ray_angle = getRayAngle(x);
+        const auto cos_ray_angle = std::cos(ray_angle);
+        const auto sin_ray_angle = std::sin(ray_angle);
+        const auto cos_angle_diff = std::cos(ray_angle-player.angle);
+        
         //shoot the ray
-        double distance = Raycast::raycast(&game->player, &game->map, getRayAngle(x), &ray_x, &ray_y);
+        double distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y) * cos_angle_diff;
 
         //calculate heights
-        int floor = getFloorScreenYPos(screen->height, distance);
-        int ceiling = getCeilScreenYPos(screen->height, distance);
+        const int floor = getFloorScreenYPos(screen->height, distance);
+        const int ceiling = getCeilScreenYPos(screen->height, distance);
 
         //get sample
-        double sample_x = getTextureSampleX(ray_x, ray_y);
-        auto texture = game->map((int)ray_x, (int)ray_y)->texture;
+        const double sample_x = getTextureSampleX(ray_x, ray_y);
+        const auto texture = game->map((int)ray_x, (int)ray_y)->texture;
 
         for (int y = 0; y < screen->height; y++)
         {
@@ -75,19 +83,39 @@ void Renderer::renderWalls()
                 continue;
 
             Pixel color;
-            if(y < ceiling && y > floor)
+            if(y > ceiling)
             {
+                const double z_plane = 0.7*((screen->height * cos_angle_diff) / (double)(std::max(1,y-(screen->height/2))));
+                
+                const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
+                const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
 
+                auto sample_x = plane_point_x - std::floor(plane_point_x);
+                auto sample_y = plane_point_y - std::floor(plane_point_y);
+
+                color = (*floor_texture)(sample_x,sample_y);
+                color.setBrightness(1- std::min(z_plane/32.0,0.5));
+            }
+            else if(y > floor)
+            {
                 //sample the y chord
-                double sample_y = (y - floor) / (double)(ceiling - floor);
+                const double sample_y = (y - floor) / (double)(ceiling - floor);
 
                 color = (*texture)(sample_x, sample_y);
                 color.setBrightness(1- std::min(distance/32.0,0.5));
             }
-            else
+            else    //Floor
             {
-                color = Color::ceiling;
+                const double z_plane =1.3* ((screen->height * cos_angle_diff) / (double)((screen->height/2) -y));
+                
+                const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
+                const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
 
+                auto sample_x = plane_point_x - std::floor(plane_point_x);
+                auto sample_y = plane_point_y - std::floor(plane_point_y);
+
+                color = (*floor_texture)(sample_x,sample_y);
+                color.setBrightness(1- std::min(z_plane/32.0,0.5));
             }
 
 
@@ -121,7 +149,7 @@ void Renderer::renderBillboard(const Billboard& object)
     int texture_width = 64;
     int texture_height = 64;
 
-    // loop thorugh every pixel
+    // loop through every pixel
     for (int lx = 0; lx < object_width; lx++)
     {
         int screen_x = object_center + lx - (int)(object_width / 2);
@@ -133,7 +161,7 @@ void Renderer::renderBillboard(const Billboard& object)
         //get sample of x chord
         int sample_x = (int)((lx / object_width) * texture_width);
 
-        //loop throght the heights
+        //loop through the heights
         for (int ly = 0; ly < object_height; ly++)
         {
             int screen_y = object_floor + ly;
