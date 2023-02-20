@@ -13,8 +13,8 @@ Renderer::Renderer(Game *game)
 
 double Renderer::getRayAngle(const int &x)
 {
-    double minangle = game->player.angle - game->player.field_of_view / 2;
-    return minangle + game->player.field_of_view * (double)x / (double)game->window_manager.screen->width;
+    const double minangle = game->player.angle - game->player.field_of_view / 2;
+    return Renderer::map(x, 0, game->window_manager.screen->width, minangle, minangle + game->player.field_of_view);
 }
 
 int Renderer::getFloorScreenYPos(const int &screen_height, const double &distance)
@@ -29,13 +29,12 @@ int Renderer::getCeilScreenYPos(const int &screen_height, const double &distance
 
 double Renderer::getTextureSampleX(const double &ray_x, const double &ray_y)
 {
-    double sample_x = 0;
-
     double blockX = (double)((int)ray_x) + 0.5f;
     double blockY = (double)((int)ray_y) + 0.5f;
 
     double testAngle = atan2(ray_y - blockY, ray_x - blockX);
 
+    double sample_x = 0;
     // depending on which side of the wall we are we need to sample differently
     if (testAngle >= -M_PI * 0.25f && testAngle < M_PI * 0.25f)
         sample_x = ray_y - (int)ray_y;
@@ -65,6 +64,11 @@ std::tuple<int, double> Renderer::getSkyboxSampleX(double angle)
         return {3, Renderer::map(percent, 2.5, 3.5, 0.0, 1.0)};
 
     return {0, Renderer::map(percent, 3.5, 4.0, 0.0, 0.5)};
+}
+
+void renderWallCollum(const int& x)
+{
+    
 }
 
 void Renderer::renderWalls()
@@ -102,21 +106,23 @@ void Renderer::renderWalls()
 
         for (int y = 0; y < screen->height; y++)
         {
-
-            Pixel color;
-            if (y > screen->height / 2)
+            if (screen->getDepth(x, y) == __FLT_MAX__)
             {
-                double sample_y = (double)y / (double)screen->height;
-                color = (*(sky_texture[sky_image]))(sky_sample_x, sample_y);
+                Pixel color;
+                if (y > screen->height / 2)
+                {
+                    double sample_y = (double)y / (double)screen->height;
+                    color = (*(sky_texture[sky_image]))(sky_sample_x, sample_y);
+                }
+                else
+                {
+                    color = Color::green;
+                }
+
+                screen->setColor(x, y, color);
             }
-            else
-            {
-                color = Color::green;
-            }
 
-
-
-            if (y >= ceiling) //draw a roof tile
+            if (y >= ceiling) // draw a roof tile
             {
                 const double z_plane = (0.7 * screen->height) / (std::max(1.0, (double)(y - screen->height / 2)) * cos_angle_diff);
 
@@ -126,25 +132,22 @@ void Renderer::renderWalls()
                 const int sample_x_int = (int)std::floor(plane_point_x);
                 const int sample_y_int = (int)std::floor(plane_point_y);
 
-                if(game->map.covers(sample_x_int, sample_y_int))
+                if (game->map.covers(sample_x_int, sample_y_int))
                 {
 
-                auto ceil_tile = game->map(sample_x_int, sample_y_int);
-                
+                    auto ceil_tile = game->map(sample_x_int, sample_y_int);
 
-                if (!ceil_tile->ceiling_transparent)
-                {
-                    auto sample_x = plane_point_x - sample_x_int;
-                    auto sample_y = plane_point_y - sample_y_int;
+                    if (!ceil_tile->ceiling_transparent)
+                    {
+                        auto sample_x = plane_point_x - sample_x_int;
+                        auto sample_y = plane_point_y - sample_y_int;
 
-                    color = (*floor_texture)(sample_x, sample_y);
-                    screen->setDepth(x, y, (float)z_plane);
-                }
-
-                
+                        screen->setColor(x, y, (*floor_texture)(sample_x, sample_y));
+                        screen->setDepth(x, y, (float)z_plane);
+                    }
                 }
             }
-            else if (y > floor)
+            else if (y >= floor)
             {
                 // sample the y chord
                 const double sample_y = (y - floor) / (double)(ceiling - floor);
@@ -152,14 +155,12 @@ void Renderer::renderWalls()
                 Pixel sample = (*texture)(sample_x, sample_y);
                 if (sample.a != 0)
                 {
-                    color = sample;
                     screen->setDepth(x, y, (float)distance);
+                    screen->setColor(x, y, sample);
                 }
             }
             else // Floor
             {
-
-
 
                 const double z_plane = (1.3 * screen->height) / (std::max(1.0, (double)(screen->height / 2 - y)) * cos_angle_diff);
 
@@ -171,23 +172,19 @@ void Renderer::renderWalls()
 
                 auto ceil_tile = game->map(sample_x_int, sample_y_int);
 
-                if(game->map.covers(sample_x_int, sample_y_int))
+                if (game->map.covers(sample_x_int, sample_y_int))
                 {
 
-                if (!ceil_tile->ceiling_transparent)
-                {
-                    auto sample_x = plane_point_x - sample_x_int;
-                    auto sample_y = plane_point_y - sample_y_int;
+                    if (!ceil_tile->ceiling_transparent)
+                    {
+                        auto sample_x = plane_point_x - sample_x_int;
+                        auto sample_y = plane_point_y - sample_y_int;
 
-                    color = (*floor_texture)(sample_x, sample_y);
-                    screen->setDepth(x, y, (float)z_plane);
+                        screen->setDepth(x, y, (float)z_plane);
+                        screen->setColor(x, y, (*floor_texture)(sample_x, sample_y));
+                    }
                 }
-                }
-
-                
             }
-            // draw pixel
-            screen->setColor(x, y, color);
         }
     }
 }
@@ -206,7 +203,7 @@ void Renderer::renderBillboard(const Billboard &object)
     int object_floor = getFloorScreenYPos(screen->height, dist);
 
     int unit_height = object_ceiling - object_floor;
-    int object_height = (unit_height) * object.height;
+    int object_height = (unit_height)*object.height;
 
     double object_ratio = object.height / object.width;
     double object_width = object_height / object_ratio;
@@ -277,7 +274,7 @@ void Renderer::renderMeshes()
 void Renderer::render()
 {
     game->window_manager.screen->fillZBuffer();
+    renderMeshes();
     renderWalls();
     renderBillboards();
-    renderMeshes();
 }

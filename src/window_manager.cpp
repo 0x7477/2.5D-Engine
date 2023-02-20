@@ -7,7 +7,7 @@
 int WindowManager::window_height = 600;
 int WindowManager::window_width = 1000;
 
-int factor = 4; //how many pixels per pixel you want to display
+int factor = 2; //how many pixels per pixel you want to display
 Game *WindowManager::game;
 WindowManager::WindowManager(int argc, char **argv, Game *game)
 {

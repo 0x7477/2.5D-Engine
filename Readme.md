@@ -17,5 +17,5 @@ Runnig
 sh run.sh
 ```
 
-> Note: When started the textures are exected to be at the relative "ressources" path.
+> Note: When started the textures are expected to be at the relative "resources" path.
 > running the scripts outside of the projects root folder may not work
