@@ -17,7 +17,7 @@ void Game::start()
     map.generate();
 
     // create some billboards
-    billboards = {{{2,2,0},"test"},{{20,10,0},"nazi"},{{8,8,0},"nazi"}};
+    billboards = {{{2,2,0},"test"}};//,{{20,10,0},"nazi"},{{8,8,0},"nazi"}};
 
     //init gameclock
     last_clock = clock();
@@ -66,7 +66,6 @@ clock_t Game::updateDeltaClock()
 }
 void Game::update()
 {
-
     //get delta time
     auto delta_time = updateDeltaClock();
 

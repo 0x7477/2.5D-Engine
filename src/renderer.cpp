@@ -66,11 +66,12 @@ void Renderer::renderWalls()
         const auto cos_angle_diff = std::cos(ray_angle-player.angle);
         
         //shoot the ray
-        double distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y) * cos_angle_diff;
+        const auto distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y);
 
+        const auto fish_eye_fixed_distance = distance *cos_angle_diff; 
         //calculate heights
-        const int floor = getFloorScreenYPos(screen->height, distance);
-        const int ceiling = getCeilScreenYPos(screen->height, distance);
+        const int floor = getFloorScreenYPos(screen->height, fish_eye_fixed_distance);
+        const int ceiling = getCeilScreenYPos(screen->height, fish_eye_fixed_distance);
 
         //get sample
         const double sample_x = getTextureSampleX(ray_x, ray_y);
@@ -85,7 +86,7 @@ void Renderer::renderWalls()
             Pixel color;
             if(y > ceiling)
             {
-                const double z_plane = 0.7*((screen->height * cos_angle_diff) / (double)(std::max(1,y-(screen->height/2))));
+                const double z_plane = (0.7*screen->height) / (std::max(1.0,(double)(y-screen->height/2)) * cos_angle_diff);
                 
                 const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
                 const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
@@ -94,7 +95,7 @@ void Renderer::renderWalls()
                 auto sample_y = plane_point_y - std::floor(plane_point_y);
 
                 color = (*floor_texture)(sample_x,sample_y);
-                color.setBrightness(1- std::min(z_plane/32.0,0.5));
+                color.setBrightness(1.0f- std::min((float)z_plane/32.0f,0.5f));
             }
             else if(y > floor)
             {
@@ -102,11 +103,11 @@ void Renderer::renderWalls()
                 const double sample_y = (y - floor) / (double)(ceiling - floor);
 
                 color = (*texture)(sample_x, sample_y);
-                color.setBrightness(1- std::min(distance/32.0,0.5));
+                color.setBrightness(1.0f- std::min((float)distance/32.0f,0.5f));
             }
             else    //Floor
             {
-                const double z_plane =1.3* ((screen->height * cos_angle_diff) / (double)((screen->height/2) -y));
+                const double z_plane = (0.7*screen->height) / (std::max(1.0,(double)(screen->height/2-y)) * cos_angle_diff);
                 
                 const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
                 const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
@@ -115,7 +116,7 @@ void Renderer::renderWalls()
                 auto sample_y = plane_point_y - std::floor(plane_point_y);
 
                 color = (*floor_texture)(sample_x,sample_y);
-                color.setBrightness(1- std::min(z_plane/32.0,0.5));
+                color.setBrightness(1.0f- std::min((float)z_plane/32.0f,0.5f));
             }
 
 
@@ -167,8 +168,9 @@ void Renderer::renderBillboard(const Billboard& object)
             int screen_y = object_floor + ly;
 
             //skip if out of screen
-            if (screen_y < 0 || screen_y > screen->height)
+            if (screen_y < 0 || screen_y >= screen->height)
                 continue;
+
 
             int sample_y = (int)(((double)ly / object_height) * texture_height);
 
@@ -181,6 +183,7 @@ void Renderer::renderBillboard(const Billboard& object)
             //skip if billboard is hidden
             if (dist > screen->getDepth(screen_x, screen_y))
                 continue;
+
 
             //draw pixel
             screen->setColor(screen_x, screen_y, sampled_pixel);
@@ -211,7 +214,7 @@ void Renderer::renderMeshes()
 void Renderer::render()
 {
     game->window_manager.screen->fillZBuffer();
-    renderBillboards();
     renderWalls();
+    renderBillboards();
     renderMeshes();
 }

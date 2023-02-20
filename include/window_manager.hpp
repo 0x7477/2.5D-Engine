@@ -24,6 +24,7 @@ class WindowManager
 
     /// @brief the update callback
     static void update();
+    static void close();
     /// @brief draws the screen buffer to the window
     void draw();
 

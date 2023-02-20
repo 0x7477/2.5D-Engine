@@ -42,7 +42,7 @@ void Mesh::draw()
         WorldPoint w3 = world_points[p[2]];
 
         //check visibility
-        if(!game->player.isVisible(w1) && !game->player.isVisible(w2) && !game->player.isVisible(w3)) continue;
+        if(!game->player.isPointVisible(w1) && !game->player.isPointVisible(w2) && !game->player.isPointVisible(w3)) continue;
 
         //draw triangle
 

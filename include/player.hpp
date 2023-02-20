@@ -19,16 +19,17 @@ public:
     /// @brief checks if a point is visible by the player
     /// @param point the point to check if it is visible
     /// @return returns if the point is visible
-    bool isVisible(const WorldPoint& point) const;
+    bool isPointVisible(const WorldPoint& point) const;
+    bool isNormalVisible(const WorldPoint& point) const;
 
     //The players position
-    double pos_x=2, pos_y=1, pos_z;
+    double pos_x=17.8162, pos_y=7.85383, pos_z;
     //The players rotation
-    double angle = M_PI - 1;
+    double angle = 4.71854;
     //The players field of view
     double field_of_view = 100 * M_PI / 360.0;
 
-    WorldPoint view;
+    WorldPoint view_l, view_r;
     //the turn and movement speed
     double turn_speed = 0.000003;
     double movement_speed = 0.00001;

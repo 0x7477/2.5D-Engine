@@ -13,7 +13,7 @@ Triangle::Triangle(Mesh* mesh, int p[3], int uv[3])
     auto uv_points = mesh->uv_points;
 
     WorldPoint normal = world_points[p[0]].getNormalizedNormalVector(world_points[p[1]],world_points[p[2]]);
-    visible = normal * mesh->game->player.view <= 0;
+    visible = mesh->game->player.isNormalVisible(normal);
 
     if(!visible) return;
     edges[0] = Edge(this, screen_points[p[0]], screen_points[p[1]], uv_points[uv[0]], uv_points[uv[1]]);

@@ -25,6 +25,8 @@ void Screen::setDepth(int x, int y, float depth)
 
 float Screen::getDepth(int x, int y)
 {
+    if(x < 0 || x >= width || y < 0 || y >= height) 
+        std::cout << x << y << "\n";
     return depthmap[x+ y*width];
 }
 

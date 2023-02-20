@@ -3,10 +3,16 @@
 #include "map.hpp"
 #include "world_point.hpp"
 
-bool Player::isVisible(const WorldPoint& point) const
+bool Player::isPointVisible(const WorldPoint& point) const
 {
     double angle = point.getAngle(this);
     return fabs(angle) < field_of_view / 2;
+}
+
+
+bool Player::isNormalVisible(const WorldPoint& point) const
+{
+    return true;
 }
 
 void Player::move(Map* map, double deltaTime)
@@ -33,6 +39,11 @@ void Player::move(Map* map, double deltaTime)
         new_pos_y -= left;
     }
 
+    if (WindowManager::buttons['p'])
+    {
+        std::cout << pos_x << " " << pos_y << " "<< angle << "\n";
+    }
+
     //if new pos is walkable update the position
     if((*map)((int)new_pos_x,(int)new_pos_y)->isWalkable()) 
     {
@@ -40,7 +51,8 @@ void Player::move(Map* map, double deltaTime)
         pos_y = new_pos_y;
     }
 
-    view = {sin(angle),cos(angle),0};
+    view_l = {sin(angle - field_of_view/2),cos(angle - field_of_view/2),0};
+    view_r = {sin(angle + field_of_view/2),cos(angle + field_of_view/2),0};
 }
 
 Player::Player(){}

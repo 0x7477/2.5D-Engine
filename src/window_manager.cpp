@@ -22,6 +22,7 @@ WindowManager::WindowManager(int argc, char **argv, Game *game)
     glutInitWindowPosition(400, 400);
     glutInitWindowSize(window_width, window_height);
     glutInitDisplayMode(GLUT_RGBA);
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,GLUT_ACTION_CONTINUE_EXECUTION);
     glutCreateWindow("shooter");
 
     //used for a more older look
@@ -70,6 +71,12 @@ void WindowManager::update()
 {
     game->update();
 }
+
+void WindowManager::close()
+{
+    glutLeaveMainLoop();
+}
+
 
 void WindowManager::reshape(int width, int height)
 {
