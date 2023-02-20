@@ -7,7 +7,7 @@ class Tile
 {
 public:
     /// @brief create a transparent, walkable Tile
-    Tile() {transparent = true;walkable = true;}
+    Tile() {transparent = true; ceiling_transparent = true; walkable = true;}
     
     /// @brief Creates a tile
     /// @param t set if the tile is walkable and invisible or not
@@ -20,7 +20,8 @@ public:
     /// @return returns the walkability of the tile
     bool isWalkable() {return walkable;}
 
-    bool transparent;
-    bool walkable;
-    Texture* texture;
+    bool transparent = true, ceiling_transparent = true;
+    bool walkable = true;
+    Texture *texture, *ceiling_texture;
+
 };

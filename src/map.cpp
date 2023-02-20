@@ -27,17 +27,22 @@ void Map::generate()
             // set transparancy randomly (3% chance)
             map[x + y * width].transparent = !(x % (width - 1) == 0 || y % (height - 1) == 0 || rand() % 100 < 0);
             map[x + y * width].walkable = map[x + y * width].transparent;
+            map[x + y * width].ceiling_transparent = true;
 
             // apply the twi textures in a checkboard pattern
             map[x + y * width].texture = &(Game::textures["fence"]);
         }
     }
 
-
     for (int y = 10; y < 20; y++)
     {
         for (int x = 10; x < 20; x++)
         {
+            map[x + y * width].ceiling_transparent = false;
+            map[x + y * width].ceiling_texture = &(Game::textures["floor"]);
+
+            if (x > 10 && x < 19 && y > 10 && y < 19)
+                continue;
             map[x + y * width].transparent = false;
             map[x + y * width].walkable = false;
 
@@ -46,6 +51,8 @@ void Map::generate()
         }
     }
 
+    map[15 + 10 * width].transparent = true;
+    map[15 + 10 * width].walkable = true;
 }
 
 void Map::display()

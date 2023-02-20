@@ -17,7 +17,13 @@ void Game::start()
     map.generate();
 
     // create some billboards
-    billboards = {{{2,2,0},"test"},{{20,10,0},"tomato"},{{8,8,0},"tomato"}};
+    billboards = {
+        {{2,2,0},"test"},
+        {{22,12,0},"tomato"},
+        {{8,8,0},"tomato"},
+        {{30,30,-0.5},"tree",2,3},
+        {{45,32,-0.5},"tree",2,3}
+        };
 
     //init gameclock
     last_clock = clock();

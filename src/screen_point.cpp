@@ -17,8 +17,8 @@ ScreenPoint::ScreenPoint(Game *game, WorldPoint point)
     // map the angle to screenspace
     x = (int)Renderer::map(object_angle, -game->player.field_of_view / 2, game->player.field_of_view / 2, 0, game->window_manager.screen->width);
 
-    int floor = Renderer::getFloorScreenYPos(game->window_manager.screen->height);
-    int ceil = Renderer::getCeilScreenYPos(game->window_manager.screen->height);
+    int floor = Renderer::getFloorScreenYPos(game->window_manager.screen->height,z);
+    int ceil = Renderer::getCeilScreenYPos(game->window_manager.screen->height,z);
 
     // interpolate z from floor to ceil
     y = (int)Renderer::map(point.z, 0, 1, floor, ceil);
