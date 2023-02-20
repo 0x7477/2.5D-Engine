@@ -56,14 +56,14 @@ Texture::Texture(std::string path)
     initMemory();
 
     int index = 0;
-    for(std::size_t x = 0; x < width; x++)
+    for(std::size_t y = 0; y < height; y++)
     {
-        for(std::size_t y = 0; y < height; y++)
+    for(std::size_t x = 0; x < width; x++)
         {
-            pixel[y][x].a = data[index+3];
-            pixel[y][x].r = data[index+2];
-            pixel[y][x].g = data[index+1];
-            pixel[y][x].b = data[index];
+            pixel[x][y].a = data[index+3];
+            pixel[x][y].r = data[index+2];
+            pixel[x][y].g = data[index+1];
+            pixel[x][y].b = data[index];
             index += 4;
         }
     }
@@ -90,12 +90,23 @@ void drawPixel(int r, int g, int b)
 
 void Texture::draw()
 {
-    for(std::size_t x = 0; x < width; x++)
+    for(std::size_t y = height; y --> 0 ;)
     {
-        for(std::size_t y = 0; y < height; y++)
-            drawPixel(pixel[x][y].r,pixel[x][y].g,pixel[x][y].b);
+        for(std::size_t x = 0; x < width; x++)
+        {
+            auto p = pixel[x][y];
+            if(p.a == 0)
+            {
+                std::cout << " ";
+                continue;
+            }
+            drawPixel(p.r,p.g,p.b);
 
-        std::cout << "\033[0m\n";
+        }
+            std::cout << y;
+            std::cout << "\033[0m\n";    
+            
+
     }
 }
 
@@ -107,10 +118,10 @@ Pixel Texture::operator()(const int& x, const int& y) const
 
 Pixel Texture::operator()(const float& x, const float& y) const
 {
-    return pixel[(int)(x*(width-1))][(int)(y*(height-1))];
+    return pixel[(int)(x*(width))][(int)(y*(height))];
 }
 
 Pixel Texture::operator()(const double& x, const double& y) const
 {
-    return pixel[(int)(x*(width-1))][(int)(y*(height-1))];
+    return pixel[(int)(x*(width))][(int)(y*(height))];
 }

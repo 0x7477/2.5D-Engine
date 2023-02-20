@@ -1,4 +1,5 @@
 #pragma once
+#include <tuple>
 class Game;
 class Mesh;
 class Billboard;
@@ -15,29 +16,30 @@ public:
     /// @param screen_height height of the screen
     /// @param distance the distance to a point
     /// @return height of the floor
-    static int getFloorScreenYPos(int screen_height, double distance);
+    static int getFloorScreenYPos(const int& screen_height, const double& distance);
     /// @brief get the height of the ceil
     /// @param screen_height height of the screen
     /// @param distance the distance to a point
     /// @return ceil of the floor
-    static int getCeilScreenYPos(int screen_height, double distance);
+    static int getCeilScreenYPos(const int& screen_height, const double& distance);
 
 
     /// @brief maps a value linear
     /// @return the linear mapped value
-    static double map(double x, double in_min, double in_max, double out_min, double out_max);
+    static double map(const double& x, const double& in_min, const double& in_max, const double& out_min, const double& out_max);
 
 
     /// @brief get the angle of the ray shot from pixel x
     /// @param x the pixel
     /// @return the angle at pixel x
-    double getRayAngle(int x);
+    double getRayAngle(const int& x);
 
     /// @brief get the x choordinate of the ray hit
     /// @param ray_x the rays hit at x pos
     /// @param ray_y the rays hit at y pos
     /// @return the textures x choordinate at hit (0-1)
-    double getTextureSampleX(double ray_x, double ray_y);
+    double getTextureSampleX(const double& ray_x, const double& ray_y);
+    std::tuple<int,double> getSkyboxSampleX(double angle);
 
 
     /// @brief render all the billboards

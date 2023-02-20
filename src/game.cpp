@@ -17,14 +17,18 @@ void Game::start()
     map.generate();
 
     // create some billboards
-    billboards = {{{2,2,0},"test"}};//,{{20,10,0},"nazi"},{{8,8,0},"nazi"}};
+    billboards = {{{2,2,0},"test"},{{20,10,0},"tomato"},{{8,8,0},"tomato"}};
 
     //init gameclock
     last_clock = clock();
 
 
-    Mesh dice{this, "resources/models/dice",{{5,5,0.5}, Quaternion::identity,0.5}};
+    Mesh dice{this, "resources/models/dice",{{5,5,1}, Quaternion::identity,0.5}};
     meshes.push_back(dice);
+
+    Mesh roof{this, "resources/models/roof",{{15,15,1}, {M_PI/2,0,0},5}};
+    meshes.push_back(roof);
+
 
 
     // Mesh cube2{this, "/home/kurt/Desktop/untitled.obj",{0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000,0xFF0000, 0xFF0000, 0xFF8000, 0xFF8000, 0xFFFF00, 0xFFFF00,  0x00FF00, 0x00FF00, 0x00FF80, 0x00FF80,0x00FFFF, 0x00FFFF, 0x0000FF, 0x0000FF, 0x000000, 0x000000 },{5,5,0.5}, Quaternion::identity,0.5};
@@ -97,7 +101,8 @@ void Game::readTextures(std::string path)
         if(file.path().extension() != ".bmp") continue;
 
         std::string filename = file.path().filename();
-        textures[filename.substr(0, filename.find('.'))] = Texture(file.path());
 
+        textures[filename.substr(0, filename.find('.'))] = Texture(file.path());
     }
+
 }

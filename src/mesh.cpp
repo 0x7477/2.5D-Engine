@@ -37,12 +37,12 @@ void Mesh::draw()
 
 
         //apply transformations
-        WorldPoint w1 = world_points[p[0]];
-        WorldPoint w2 = world_points[p[1]];
-        WorldPoint w3 = world_points[p[2]];
+        // WorldPoint w1 = world_points[p[0]];
+        // WorldPoint w2 = world_points[p[1]];
+        // WorldPoint w3 = world_points[p[2]];
 
         //check visibility
-        if(!game->player.isPointVisible(w1) && !game->player.isPointVisible(w2) && !game->player.isPointVisible(w3)) continue;
+        // if(!game->player.isPointVisible(w1) && !game->player.isPointVisible(w2) && !game->player.isPointVisible(w3)) continue;
 
         //draw triangle
 

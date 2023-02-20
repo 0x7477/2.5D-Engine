@@ -5,6 +5,7 @@
 #include "mesh.hpp"
 
 #include <iostream>
+#include <tuple>
 #include <cmath>
 
 Renderer::Renderer(Game *game)
@@ -12,23 +13,23 @@ Renderer::Renderer(Game *game)
 
 
 
-double Renderer::getRayAngle(int x)
+double Renderer::getRayAngle(const int& x)
 {
     double minangle = game->player.angle - game->player.field_of_view / 2;
     return minangle + game->player.field_of_view * (double)x / (double)game->window_manager.screen->width;
 }
 
-int Renderer::getFloorScreenYPos(int screen_height, double distance)
+int Renderer::getFloorScreenYPos(const int& screen_height, const double& distance)
 {
     return (screen_height / 2) - (int)((screen_height / distance) * 1.3);
 }
 
-int Renderer::getCeilScreenYPos(int screen_height, double distance)
+int Renderer::getCeilScreenYPos(const int& screen_height, const double& distance)
 {
     return (screen_height / 2) + (int)((screen_height / distance) * 0.7);
 }
 
-double Renderer::getTextureSampleX(double ray_x, double ray_y)
+double Renderer::getTextureSampleX(const double& ray_x, const double& ray_y)
 {
     double sample_x = 0;
 
@@ -50,12 +51,31 @@ double Renderer::getTextureSampleX(double ray_x, double ray_y)
     return sample_x;
 }
 
+std::tuple<int,double> Renderer::getSkyboxSampleX(double angle)
+{  
+    angle -= floor(angle / (2*M_PI)) * 2*M_PI;
+
+    double percent = 4*angle / (2*M_PI);
+    
+    if (percent < 0.5)
+        return {0,Renderer::map(percent,0.0, 0.5,0.5,1.0)};
+    if (percent < 1.5)
+        return {2,Renderer::map(percent,0.5, 1.5,0.0,1.0)};
+    if (percent < 2.5)
+        return {1,Renderer::map(percent,1.5, 2.5,0.0,1.0)};
+    if (percent < 3.5)
+        return {3,Renderer::map(percent,2.5, 3.5,0.0,1.0)};
+
+    return {0,Renderer::map(percent,3.5, 4.0,0.0,0.5)};
+}
+
 void Renderer::renderWalls()
 {
     auto screen = game->window_manager.screen;
     auto player = game->player;
 
     auto floor_texture = &Game::textures["floor"];
+    Texture* sky_texture[] = {&Game::textures["sky_0"],&Game::textures["sky_1"],&Game::textures["sky_2"],&Game::textures["sky_3"], &Game::textures["test"], &Game::textures["swastika"]};
 
     double ray_x, ray_y;
     for (int x = 0; x < screen->width; x++)
@@ -77,6 +97,11 @@ void Renderer::renderWalls()
         const double sample_x = getTextureSampleX(ray_x, ray_y);
         const auto texture = game->map((int)ray_x, (int)ray_y)->texture;
 
+        int sky_image = 0;
+        double sky_sample_x = 0;
+
+        std::tie(sky_image,sky_sample_x) = getSkyboxSampleX(ray_angle);
+
         for (int y = 0; y < screen->height; y++)
         {
             //check zBuffer
@@ -84,29 +109,31 @@ void Renderer::renderWalls()
                 continue;
 
             Pixel color;
-            if(y > ceiling)
+            if(y > screen->height/2)
             {
-                const double z_plane = (0.7*screen->height) / (std::max(1.0,(double)(y-screen->height/2)) * cos_angle_diff);
-                
-                const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
-                const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
-
-                auto sample_x = plane_point_x - std::floor(plane_point_x);
-                auto sample_y = plane_point_y - std::floor(plane_point_y);
-
-                color = (*floor_texture)(sample_x,sample_y);
-                color.setBrightness(1.0f- std::min((float)z_plane/32.0f,0.5f));
+                double sample_y = (double)y/(double)screen->height;
+                color = (*(sky_texture[sky_image]))(sky_sample_x,sample_y);
             }
-            else if(y > floor)
+            else
+            {
+                color = Color::green;
+            }
+
+            if(y > floor && y < ceiling)
             {
                 //sample the y chord
                 const double sample_y = (y - floor) / (double)(ceiling - floor);
 
-                color = (*texture)(sample_x, sample_y);
-                color.setBrightness(1.0f- std::min((float)distance/32.0f,0.5f));
+                Pixel sample = (*texture)(sample_x, sample_y);
+                if(sample.a != 0)
+                color = sample;
+                screen->setDepth(x, y, (float)distance);
+                
+                // color.setBrightness(1.0f- std::min((float)distance/32.0f,0.5f));
             }
-            else    //Floor
+            else if(y <= floor)    //Floor
             {
+                /*
                 const double z_plane = (0.7*screen->height) / (std::max(1.0,(double)(screen->height/2-y)) * cos_angle_diff);
                 
                 const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
@@ -117,13 +144,18 @@ void Renderer::renderWalls()
 
                 color = (*floor_texture)(sample_x,sample_y);
                 color.setBrightness(1.0f- std::min((float)z_plane/32.0f,0.5f));
-            }
 
+                    screen->setDepth(x, y, (float)z_plane);
+
+                */
+        
+            }
 
             //draw pixel
             screen->setColor(x, y, color);
-            screen->setDepth(x, y, (float)distance);
         }
+
+
     }
 }
 
@@ -199,7 +231,7 @@ void Renderer::renderBillboards()
         renderBillboard(object);
 }
 
-double Renderer::map(double x, double in_min, double in_max, double out_min, double out_max)
+double Renderer::map(const double& x, const double& in_min, const double& in_max, const double& out_min, const double& out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -207,13 +239,16 @@ double Renderer::map(double x, double in_min, double in_max, double out_min, dou
 void Renderer::renderMeshes()
 {
     for(auto& mesh: game->meshes)
+    {
         mesh.draw();
+    }
 }
 
 
 void Renderer::render()
 {
     game->window_manager.screen->fillZBuffer();
+    game->window_manager.screen->fill(Color::black);
     renderWalls();
     renderBillboards();
     renderMeshes();

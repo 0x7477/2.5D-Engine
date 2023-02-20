@@ -41,13 +41,15 @@ void Span::draw(int y)
 	double v_delta = uv2.v - uv1.v;
 
 	// draw each pixel in the span
-	for(int x = std::max(x1,0); x < std::min(x2,t->screen->width); x++) 
+	for(int x = x1; x < x2; x++) 
     {
 		auto depth = depth1 + depth_delta * factor;
 		auto u = uv1.u + u_delta * factor;
 		auto v = uv1.v + v_delta * factor;
 
 		factor += factorStep;
+
+		if(x < 0 || x >= t->screen->width) continue;
 
 		//skip if hidden
 		if(t->screen->getDepth(x,y) < depth)
@@ -60,8 +62,7 @@ void Span::draw(int y)
 		Pixel texture_sample = (*t->texture)(sample_x,sample_y);
 
 		texture_sample.setBrightness(t->light_intensity);
-		// std::cout << sample_x << " "<< sample_y << "\n";
-// 
+ 
         t->screen->setColor(x,y,texture_sample);
         t->screen->setDepth(x,y,depth);
 	}
