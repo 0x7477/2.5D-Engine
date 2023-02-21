@@ -1,7 +1,10 @@
 #pragma once
 #include <tuple>
 class Game;
+class Texture;
 class Mesh;
+class Screen;
+class Player;
 class Billboard;
 
 /// @brief The game renderer
@@ -56,5 +59,17 @@ public:
     /// @brief render the walls of the game
     void renderWalls();
 
+
+    void renderWallCollum(const int &x);
+    void renderSkybox(const int &x,const int &y,const int & sky_image,const double & sky_sample_x);
+bool renderCeiling(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
+bool renderWall(const int &x, const int &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x);
+bool renderFloor(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
+
+
     Game* game;
+    Screen* screen;
+    Player* player;
+
+    Texture *sky_textures[6];
 };

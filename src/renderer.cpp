@@ -9,7 +9,11 @@
 #include <cmath>
 
 Renderer::Renderer(Game *game)
-    : game{game} {}
+    : game{game}, player{&game->player},
+      sky_textures{&Game::textures["sky_0"], &Game::textures["sky_1"], &Game::textures["sky_2"], &Game::textures["sky_3"], &Game::textures["test"], &Game::textures["swastika"]}
+
+{
+}
 
 double Renderer::getRayAngle(const int &x)
 {
@@ -66,127 +70,151 @@ std::tuple<int, double> Renderer::getSkyboxSampleX(double angle)
     return {0, Renderer::map(percent, 3.5, 4.0, 0.0, 0.5)};
 }
 
-void renderWallCollum(const int& x)
+void Renderer::renderSkybox(const int &x, const int &y, const int &sky_image, const double &sky_sample_x)
 {
-    
+    if (screen->getDepth(x, y) != __FLT_MAX__)
+        return;
+
+    Pixel color;
+    if (y > screen->height / 2)
+    {
+        double sample_y = (double)y / (double)screen->height;
+        color = (*(sky_textures[sky_image]))(sky_sample_x, sample_y);
+    }
+    else
+    {
+        color = Color::green;
+    }
+    screen->setColor(x, y, color);
+}
+
+bool Renderer::renderFloor(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
+{
+
+    const double z_plane = (1.3 * screen->height) / (std::max(1.0, (double)(screen->height / 2 - y)) * cos_angle_diff);
+
+    const auto plane_point_x = player->pos_x + sin_ray_angle * z_plane;
+    const auto plane_point_y = player->pos_y + cos_ray_angle * z_plane;
+
+    const int sample_x_int = (int)std::floor(plane_point_x);
+    const int sample_y_int = (int)std::floor(plane_point_y);
+
+    auto ceil_tile = game->map(sample_x_int, sample_y_int);
+
+    if (!game->map.covers(sample_x_int, sample_y_int))
+        return false;
+
+    if (ceil_tile->ceiling_transparent)
+        return false;
+
+    auto sample_x = plane_point_x - sample_x_int;
+    auto sample_y = plane_point_y - sample_y_int;
+
+    screen->setDepth(x, y, (float)z_plane);
+
+    const auto floor_texture = game->map(sample_x_int, sample_y_int)->floor_texture;
+    screen->setColor(x, y, (*floor_texture)(sample_x, sample_y));
+
+    return true;
+}
+
+bool Renderer::renderCeiling(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
+{
+    const double z_plane = (0.7 * screen->height) / (std::max(1.0, (double)(y - screen->height / 2)) * cos_angle_diff);
+
+    const auto plane_point_x = player->pos_x + sin_ray_angle * z_plane;
+    const auto plane_point_y = player->pos_y + cos_ray_angle * z_plane;
+
+    const int sample_x_int = (int)std::floor(plane_point_x);
+    const int sample_y_int = (int)std::floor(plane_point_y);
+
+    if (!game->map.covers(sample_x_int, sample_y_int))
+        return false;
+
+    auto ceil_tile = game->map(sample_x_int, sample_y_int);
+
+    if (ceil_tile->ceiling_transparent)
+        return false;
+
+    auto sample_x = plane_point_x - sample_x_int;
+    auto sample_y = plane_point_y - sample_y_int;
+
+    const auto ceiling_texture = game->map(sample_x_int, sample_y_int)->ceiling_texture;
+    screen->setColor(x, y, (*ceiling_texture)(sample_x, sample_y));
+    screen->setDepth(x, y, (float)z_plane);
+
+    return true;
+}
+
+bool Renderer::renderWall(const int &x, const int &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x)
+{
+    // sample the y chord
+    const double sample_y = (y - floor) / (double)(ceiling - floor);
+
+    Pixel sample = (*texture)(sample_x, sample_y);
+    if (sample.a == 0)
+        return false;
+
+    screen->setDepth(x, y, (float)distance);
+    screen->setColor(x, y, sample);
+
+    return true;
+}
+
+void Renderer::renderWallCollum(const int &x)
+{
+    auto player = game->player;
+
+    const auto ray_angle = getRayAngle(x);
+    const auto cos_ray_angle = std::cos(ray_angle);
+    const auto sin_ray_angle = std::sin(ray_angle);
+    const auto cos_angle_diff = std::cos(ray_angle - player.angle);
+
+    // shoot the ray
+    double ray_x, ray_y;
+    const auto distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y);
+
+    const auto fish_eye_fixed_distance = distance * ((WindowManager::buttons['b']) ? 1 : cos_angle_diff);
+    // calculate heights
+    const int floor = getFloorScreenYPos(screen->height, fish_eye_fixed_distance);
+    const int ceiling = getCeilScreenYPos(screen->height, fish_eye_fixed_distance);
+
+    // get sample
+    const double sample_x = getTextureSampleX(ray_x, ray_y);
+    const auto texture = game->map((int)ray_x, (int)ray_y)->texture;
+
+    int sky_image = 0;
+    double sky_sample_x = 0;
+
+    std::tie(sky_image, sky_sample_x) = getSkyboxSampleX(ray_angle);
+
+    for (int y = 0; y < screen->height; y++)
+    {
+        bool rendered = false;
+        // renderSkybox
+
+        if (y >= ceiling) // draw a roof tile
+        {
+            rendered = renderCeiling(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
+        }
+        else if (y >= floor)
+        {
+            rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x);
+        }
+        else // Floor
+        {
+            rendered = renderFloor(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
+        }
+
+        if (!rendered)
+            renderSkybox(x, y, sky_image, sky_sample_x);
+    }
 }
 
 void Renderer::renderWalls()
 {
-    auto screen = game->window_manager.screen;
-    auto player = game->player;
-
-    auto floor_texture = &Game::textures["floor"];
-    Texture *sky_texture[] = {&Game::textures["sky_0"], &Game::textures["sky_1"], &Game::textures["sky_2"], &Game::textures["sky_3"], &Game::textures["test"], &Game::textures["swastika"]};
-
-    double ray_x, ray_y;
-    for (int x = 0; x < screen->width; x++)
-    {
-        const auto ray_angle = getRayAngle(x);
-        const auto cos_ray_angle = std::cos(ray_angle);
-        const auto sin_ray_angle = std::sin(ray_angle);
-        const auto cos_angle_diff = std::cos(ray_angle - player.angle);
-
-        // shoot the ray
-        const auto distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y);
-
-        const auto fish_eye_fixed_distance = distance * ((WindowManager::buttons['b']) ? 1 : cos_angle_diff);
-        // calculate heights
-        const int floor = getFloorScreenYPos(screen->height, fish_eye_fixed_distance);
-        const int ceiling = getCeilScreenYPos(screen->height, fish_eye_fixed_distance);
-
-        // get sample
-        const double sample_x = getTextureSampleX(ray_x, ray_y);
-        const auto texture = game->map((int)ray_x, (int)ray_y)->texture;
-
-        int sky_image = 0;
-        double sky_sample_x = 0;
-
-        std::tie(sky_image, sky_sample_x) = getSkyboxSampleX(ray_angle);
-
-        for (int y = 0; y < screen->height; y++)
-        {
-            if (screen->getDepth(x, y) == __FLT_MAX__)
-            {
-                Pixel color;
-                if (y > screen->height / 2)
-                {
-                    double sample_y = (double)y / (double)screen->height;
-                    color = (*(sky_texture[sky_image]))(sky_sample_x, sample_y);
-                }
-                else
-                {
-                    color = Color::green;
-                }
-
-                screen->setColor(x, y, color);
-            }
-
-            if (y >= ceiling) // draw a roof tile
-            {
-                const double z_plane = (0.7 * screen->height) / (std::max(1.0, (double)(y - screen->height / 2)) * cos_angle_diff);
-
-                const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
-                const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
-
-                const int sample_x_int = (int)std::floor(plane_point_x);
-                const int sample_y_int = (int)std::floor(plane_point_y);
-
-                if (game->map.covers(sample_x_int, sample_y_int))
-                {
-
-                    auto ceil_tile = game->map(sample_x_int, sample_y_int);
-
-                    if (!ceil_tile->ceiling_transparent)
-                    {
-                        auto sample_x = plane_point_x - sample_x_int;
-                        auto sample_y = plane_point_y - sample_y_int;
-
-                        screen->setColor(x, y, (*floor_texture)(sample_x, sample_y));
-                        screen->setDepth(x, y, (float)z_plane);
-                    }
-                }
-            }
-            else if (y >= floor)
-            {
-                // sample the y chord
-                const double sample_y = (y - floor) / (double)(ceiling - floor);
-
-                Pixel sample = (*texture)(sample_x, sample_y);
-                if (sample.a != 0)
-                {
-                    screen->setDepth(x, y, (float)distance);
-                    screen->setColor(x, y, sample);
-                }
-            }
-            else // Floor
-            {
-
-                const double z_plane = (1.3 * screen->height) / (std::max(1.0, (double)(screen->height / 2 - y)) * cos_angle_diff);
-
-                const auto plane_point_x = player.pos_x + sin_ray_angle * z_plane;
-                const auto plane_point_y = player.pos_y + cos_ray_angle * z_plane;
-
-                const int sample_x_int = (int)std::floor(plane_point_x);
-                const int sample_y_int = (int)std::floor(plane_point_y);
-
-                auto ceil_tile = game->map(sample_x_int, sample_y_int);
-
-                if (game->map.covers(sample_x_int, sample_y_int))
-                {
-
-                    if (!ceil_tile->ceiling_transparent)
-                    {
-                        auto sample_x = plane_point_x - sample_x_int;
-                        auto sample_y = plane_point_y - sample_y_int;
-
-                        screen->setDepth(x, y, (float)z_plane);
-                        screen->setColor(x, y, (*floor_texture)(sample_x, sample_y));
-                    }
-                }
-            }
-        }
-    }
+    for (int x = 0; x < game->window_manager.screen->width; x++)
+        renderWallCollum(x);
 }
 
 void Renderer::renderBillboard(const Billboard &object)
@@ -203,7 +231,7 @@ void Renderer::renderBillboard(const Billboard &object)
     int object_floor = getFloorScreenYPos(screen->height, dist);
 
     int unit_height = object_ceiling - object_floor;
-    int object_height = (unit_height)*object.height;
+    int object_height = (int)(unit_height * object.height);
 
     double object_ratio = object.height / object.width;
     double object_width = object_height / object_ratio;
@@ -228,7 +256,7 @@ void Renderer::renderBillboard(const Billboard &object)
         // loop through the heights
         for (int ly = 0; ly < object_height; ly++)
         {
-            int screen_y = object_floor + ly + unit_height * object.pos.z;
+            int screen_y = object_floor + ly + (int)(unit_height * object.pos.z);
             // skip if out of screen
             if (screen_y < 0 || screen_y >= screen->height)
                 continue;
@@ -273,6 +301,7 @@ void Renderer::renderMeshes()
 
 void Renderer::render()
 {
+    screen = game->window_manager.screen; // update in case we have gotten a new screen buffer
     game->window_manager.screen->fillZBuffer();
     renderMeshes();
     renderWalls();

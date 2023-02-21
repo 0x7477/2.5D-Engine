@@ -9,10 +9,7 @@ ScreenPoint::ScreenPoint() {}
 ScreenPoint::ScreenPoint(Game *game, WorldPoint point)
 {
     const auto object_angle = point.getAngle(&game->player);
-    const auto cos_angle_diff = std::cos(game->player.angle - object_angle);
     z = (float)point.getDistance(&game->player);
-
-
 
     // map the angle to screenspace
     x = (int)Renderer::map(object_angle, -game->player.field_of_view / 2, game->player.field_of_view / 2, 0, game->window_manager.screen->width);

@@ -22,6 +22,6 @@ public:
 
     bool transparent = true, ceiling_transparent = true;
     bool walkable = true;
-    Texture *texture, *ceiling_texture;
+    Texture *texture, *ceiling_texture,*floor_texture;
 
 };

@@ -40,13 +40,13 @@ void Map::generate()
         {
             map[x + y * width].ceiling_transparent = false;
             map[x + y * width].ceiling_texture = &(Game::textures["floor"]);
+            map[x + y * width].floor_texture = &(Game::textures["floor"]);
 
             if (x > 10 && x < 19 && y > 10 && y < 19)
                 continue;
             map[x + y * width].transparent = false;
             map[x + y * width].walkable = false;
 
-            // apply the twi textures in a checkboard pattern
             map[x + y * width].texture = &(Game::textures["wall"]);
         }
     }
