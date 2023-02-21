@@ -52,6 +52,10 @@ public:
     /// @param object teh billboard to be rendered
     void renderBillboard(const Billboard& object);
 
+
+void renderBillboardColumn(const Billboard &object, const int& x, const int& object_center, const double& object_width,const int& object_height, const int &object_floor, const int &unit_height, const double& dist);
+void renderBillboardPixel(const Billboard &object, const int& screen_x,const int& y, const int& object_center, const double& object_width,const int& object_height, const int &object_floor, const int &unit_height, const double& dist,const double& sample_x);
+
     /// @brief render all the meshes contained in the game
     void renderMeshes();
 
@@ -62,10 +66,10 @@ public:
 
     void renderWallColumn(const std::size_t &x);
     void renderSkybox(const std::size_t &x,const std::size_t &y,const std::size_t & sky_image,const double & sky_sample_x);
-bool renderCeiling(const std::size_t &x,const std::size_t &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
-bool renderWall(const std::size_t &x, const std::size_t &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x);
-bool renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
-void renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x);
+    bool renderCeiling(const std::size_t &x,const std::size_t &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
+    bool renderWall(const std::size_t &x, const std::size_t &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x);
+    bool renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
+    void renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x);
 
     Game* game;
     Screen* screen;

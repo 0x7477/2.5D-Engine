@@ -49,7 +49,7 @@ void Span::draw(int y)
 
 		factor += factorStep;
 
-		if(x < 0 || x >= t->screen->width) continue;
+		if(x < 0 || x >= (int)t->screen->width) continue;
 
 		//skip if hidden
 		if(t->screen->getDepth(x,y) < depth)

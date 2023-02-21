@@ -29,7 +29,7 @@ void Game::start()
     last_clock = clock();
 
 
-    Mesh dice{this, "resources/models/dice",{{5,5,1}, Quaternion::identity,0.5}};
+    Mesh dice{this, "resources/models/dice",{{5,5,0.5}, Quaternion::identity,0.5}};
     meshes.push_back(dice);
 
     Mesh roof{this, "resources/models/roof",{{15,15,1}, {M_PI/2,0,0},5}};

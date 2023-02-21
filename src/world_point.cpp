@@ -34,7 +34,7 @@ WorldPoint WorldPoint::getNormalizedNormalVector(WorldPoint p1, WorldPoint p2) c
 }
 float WorldPoint::getLength() const
 {
-    return x * x + y * y + z * z;
+    return (float)(x * x + y * y + z * z);
 }
 
 float inverseSquareRoot(const float number)

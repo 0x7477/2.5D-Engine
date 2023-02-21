@@ -93,6 +93,9 @@ bool Renderer::renderFloor(const std::size_t &x, const std::size_t &y, const dou
 
     const double z_plane = (1.3 * screen->height) / (std::max(1.0, (double)(screen->height / 2 - y)) * cos_angle_diff);
 
+    if (screen->getDepth(x, y) < z_plane) 
+        return false;
+
     const auto plane_point_x = player->pos_x + sin_ray_angle * z_plane;
     const auto plane_point_y = player->pos_y + cos_ray_angle * z_plane;
 
@@ -122,6 +125,9 @@ bool Renderer::renderCeiling(const std::size_t &x, const std::size_t &y, const d
 {
     const double z_plane = (0.7 * screen->height) / (std::max(1.0, (double)(y - screen->height / 2)) * cos_angle_diff);
 
+    if (screen->getDepth(x, y) < z_plane) 
+        return false;
+
     const auto plane_point_x = player->pos_x + sin_ray_angle * z_plane;
     const auto plane_point_y = player->pos_y + cos_ray_angle * z_plane;
 
@@ -148,8 +154,11 @@ bool Renderer::renderCeiling(const std::size_t &x, const std::size_t &y, const d
 
 bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x)
 {
+    if (screen->getDepth(x, y) < distance) 
+        return false;
+
     // sample the y chord
-    const double sample_y = (y - floor) / (double)(ceiling - floor);
+    const double sample_y = map(y,floor,ceiling,0,1);
 
     Pixel sample = (*texture)(sample_x, sample_y);
     if (sample.a == 0)
@@ -164,22 +173,15 @@ bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const doub
 void Renderer::renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x)
 {
     bool rendered = false;
-        // renderSkybox
 
-    if (y >= ceiling) // draw a roof tile
-    {
+    if (y >= ceiling) // draw a ceiling
         rendered = renderCeiling(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
-    }
-    else if (y >= floor)
-    {
+    else if (y >= floor) //draw a wall
         rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x);
-    }
-    else // Floor
-    {
+    else // draw a floor
         rendered = renderFloor(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
-    }
 
-    if (!rendered)
+    if (!rendered) //draw a sky
         renderSkybox(x, y, sky_image, sky_sample_x);
 }
 
@@ -195,7 +197,7 @@ void Renderer::renderWallColumn(const std::size_t &x)
     double ray_x, ray_y;
     const auto distance = Raycast::raycast(player, &game->map, ray_angle, &ray_x, &ray_y);
 
-    const auto fish_eye_fixed_distance = distance * ((WindowManager::buttons['b']) ? 1 : cos_angle_diff);
+    const auto fish_eye_fixed_distance = distance * cos_angle_diff;
     // calculate heights
     const int floor = getFloorScreenYPos(screen->height, fish_eye_fixed_distance);
     const int ceiling = getCeilScreenYPos(screen->height, fish_eye_fixed_distance);
@@ -220,12 +222,54 @@ void Renderer::renderWalls()
         renderWallColumn(x);
 }
 
+
+void Renderer::renderBillboardPixel(const Billboard &object, const int& screen_x,const int& y, const int& object_center, const double& object_width,const int& object_height, const int &object_floor, const int &unit_height, const double& dist, const double& sample_x)
+{
+    std::size_t screen_y = object_floor + y + (std::size_t)(unit_height * object.pos.z);
+    // skip if out of screen
+    if (screen_y < 0 || screen_y >= screen->height)
+        return;
+
+    const double sample_y = (double)y / object_height;
+
+    Pixel sampled_pixel = (*object.texture)(sample_x, sample_y);
+
+    // skip if texture is transparent at pixel
+    if (sampled_pixel.a == 0)
+        return;
+
+    // skip if billboard is hidden
+    if (dist > screen->getDepth(screen_x, screen_y))
+        return;
+
+    // draw pixel
+    screen->setColor(screen_x, screen_y, sampled_pixel);
+    screen->setDepth(screen_x, screen_y, (float)dist);
+}
+
+void Renderer::renderBillboardColumn(const Billboard &object, const int& x, const int& object_center, const double& object_width,const int& object_height, const int &object_floor, const int &unit_height, const double& dist)
+{
+    std::size_t screen_x = object_center + x - (int)(object_width / 2);
+
+    // skip if not visible
+    if (screen_x < 0 || screen_x >= screen->width)
+        return;
+
+    // get sample of x chord
+    const double sample_x = ((double)x / object_width);
+
+    // loop through the heights
+    for (int y = 0; y < object_height; y++)
+        renderBillboardPixel(object, screen_x,y, object_center, object_width, object_height, object_floor, unit_height, dist, sample_x);
+
+    
+}
+
+
 void Renderer::renderBillboard(const Billboard &object)
 {
     if (!object.isVisible(&game->player))
         return;
-
-    auto screen = game->window_manager.screen;
 
     // get object information
     double dist = object.pos.getDistance(&game->player);
@@ -234,53 +278,17 @@ void Renderer::renderBillboard(const Billboard &object)
     int object_floor = getFloorScreenYPos(screen->height, dist);
 
     int unit_height = object_ceiling - object_floor;
-    std::size_t object_height = (std::size_t)(unit_height * object.height);
+    int object_height = (int)(unit_height * object.height);
 
     double object_ratio = object.height / object.width;
     double object_width = object_height / object_ratio;
 
     int object_center = (int)((0.5 * (object.pos.getAngle(&game->player) / (game->player.field_of_view / 2)) + 0.5) * screen->width);
 
-    int texture_width = object.texture->width;
-    int texture_height = object.texture->height;
-
     // loop through every pixel
-    for (std::size_t lx = 0; lx < object_width; lx++)
-    {
-        std::size_t screen_x = object_center + lx - (std::size_t)(object_width / 2);
-
-        // skip if not visible
-        if (screen_x < 0 || screen_x >= screen->width)
-            continue;
-
-        // get sample of x chord
-        int sample_x = (int)((lx / object_width) * texture_width);
-
-        // loop through the heights
-        for (std::size_t ly = 0; ly < object_height; ly++)
-        {
-            std::size_t screen_y = object_floor + ly + (std::size_t)(unit_height * object.pos.z);
-            // skip if out of screen
-            if (screen_y < 0 || screen_y >= screen->height)
-                continue;
-
-            int sample_y = (int)(((double)ly / object_height) * texture_height);
-
-            Pixel sampled_pixel = (*object.texture)(sample_x, sample_y);
-
-            // skip if texture is transparent at pixel
-            if (sampled_pixel.a == 0)
-                continue;
-
-            // skip if billboard is hidden
-            if (dist > screen->getDepth(screen_x, screen_y))
-                continue;
-
-            // draw pixel
-            screen->setColor(screen_x, screen_y, sampled_pixel);
-            screen->setDepth(screen_x, screen_y, (float)dist);
-        }
-    }
+    for (int x = 0; x < object_width; x++)
+        renderBillboardColumn(object,x,object_center,object_width,object_height,object_floor,unit_height, dist);
+    
 }
 
 void Renderer::renderBillboards()

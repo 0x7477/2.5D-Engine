@@ -26,7 +26,7 @@ ScreenPoint::ScreenPoint(int x, int y, float z)
 
 bool ScreenPoint::isOnScreen(Screen *screen)
 {
-    return x >= 0 && x < screen->width && y >= 0 && y < screen->height;
+    return x >= 0 && x < (int)screen->width && y >= 0 && y < (int)screen->height;
 }
 
 std::ostream &operator<<(std::ostream &os, const ScreenPoint &p)
