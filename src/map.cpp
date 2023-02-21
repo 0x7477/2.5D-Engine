@@ -2,7 +2,7 @@
 #include "game.hpp"
 #include <cstdlib>
 #include <iostream>
-Map::Map(int width, int height)
+Map::Map(std::size_t width, std::size_t height)
     : width{width}, height{height}
 {
     map = new Tile[width * height];
@@ -13,16 +13,16 @@ Map::~Map()
     delete[] map;
 }
 
-Tile *Map::operator()(int x, int y)
+Tile *Map::operator()(std::size_t x, std::size_t y)
 {
     return &map[x + y * width];
 }
 
 void Map::generate()
 {
-    for (int x = 0; x < width; x++)
+    for (std::size_t x = 0; x < width; x++)
     {
-        for (int y = 0; y < height; y++)
+        for (std::size_t y = 0; y < height; y++)
         {
             // set transparancy randomly (3% chance)
             map[x + y * width].transparent = !(x % (width - 1) == 0 || y % (height - 1) == 0 || rand() % 100 < 0);
@@ -34,9 +34,9 @@ void Map::generate()
         }
     }
 
-    for (int y = 10; y < 20; y++)
+    for (std::size_t y = 10; y < 20; y++)
     {
-        for (int x = 10; x < 20; x++)
+        for (std::size_t x = 10; x < 20; x++)
         {
             map[x + y * width].ceiling_transparent = false;
             map[x + y * width].ceiling_texture = &(Game::textures["floor"]);
@@ -57,9 +57,9 @@ void Map::generate()
 
 void Map::display()
 {
-    for (int x = 0; x < width; x++)
+    for (std::size_t x = 0; x < width; x++)
     {
-        for (int y = 0; y < height; y++)
+        for (std::size_t y = 0; y < height; y++)
             std::cout << (map[x + y * width].transparent ? " " : "#");
 
         std::cout << "\n";

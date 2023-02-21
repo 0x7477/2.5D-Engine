@@ -66,8 +66,23 @@ In this method we loop through every **Pixel** of the **Screen** in the xAxis.
 For every pixel we want to shoot a ray to detect the distance to the nearest wall.
 For this it is necessary to know the angle and position the ray is to be shot from.
 
+```C++
+void Renderer::renderWalls()
+{
+    for (int x = 0; x < game->window_manager.screen->width; x++)
+        renderWallCollum(x);
+}
+```
+
 The position is easy as it is the position of the camera.
 For determining the angle of the camera we simply map the value of the x position of the screen across 
 the FOV of the player.
 
+```C++
+double Renderer::getRayAngle(const int &x)
+{
+    const double minangle = game->player.angle - game->player.field_of_view / 2;
+    return Renderer::map(x, 0, game->window_manager.screen->width, minangle, minangle + game->player.field_of_view);
+}
+```
 

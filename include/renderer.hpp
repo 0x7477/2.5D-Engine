@@ -42,7 +42,7 @@ public:
     /// @param ray_y the rays hit at y pos
     /// @return the textures x choordinate at hit (0-1)
     double getTextureSampleX(const double& ray_x, const double& ray_y);
-    std::tuple<int,double> getSkyboxSampleX(double angle);
+    std::tuple<std::size_t,double> getSkyboxSampleX(double angle);
 
 
     /// @brief render all the billboards
@@ -60,12 +60,12 @@ public:
     void renderWalls();
 
 
-    void renderWallCollum(const int &x);
-    void renderSkybox(const int &x,const int &y,const int & sky_image,const double & sky_sample_x);
-bool renderCeiling(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
-bool renderWall(const int &x, const int &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x);
-bool renderFloor(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
-
+    void renderWallColumn(const std::size_t &x);
+    void renderSkybox(const std::size_t &x,const std::size_t &y,const std::size_t & sky_image,const double & sky_sample_x);
+bool renderCeiling(const std::size_t &x,const std::size_t &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
+bool renderWall(const std::size_t &x, const std::size_t &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x);
+bool renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
+void renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x);
 
     Game* game;
     Screen* screen;

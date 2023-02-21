@@ -10,7 +10,7 @@ class Map
     /// @brief Creates a new Map
     /// @param width with of the Map
     /// @param height height of the Map
-    Map(int width, int height);
+    Map(std::size_t width, std::size_t height);
     ~Map();
     Map(const Map&) = delete;
     Map(Map&& other) = delete;
@@ -21,7 +21,7 @@ class Map
     /// @param x the x position
     /// @param y the y position
     /// @return the tile at x,y
-    Tile* operator()(int x, int y);
+    Tile* operator()(std::size_t x, std::size_t y);
 
     /// @brief Generates a Map
     void generate();
@@ -34,6 +34,6 @@ class Map
     /// @return if the Coordinates are in the map
     bool covers(double x, double y);
 
-    const int width = 50, height = 50;
+    const std::size_t width = 50, height = 50;
     Tile* map;
 };

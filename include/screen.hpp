@@ -10,7 +10,7 @@ class Screen
     /// @brief Initialize a screen buffer
     /// @param width the width in pixels
     /// @param height the height in pixels
-    Screen(int width, int height);
+    Screen(std::size_t width, std::size_t height);
     ~Screen();
     Screen(const Screen&) = delete;
     Screen(Screen&& other) = delete;
@@ -21,19 +21,19 @@ class Screen
     /// @param x the x pixel chord
     /// @param y the y pixel chord
     /// @param color the color to be set
-    void setColor(int x, int y, Pixel color);
+    void setColor(std::size_t x, std::size_t y, Pixel color);
 
     /// @brief gets the zBuffer at x,y
     /// @param x the x pixel chord
     /// @param y the y pixel chord
     /// @return the Depth at (x,y)
-    float getDepth(int x, int y);
+    float getDepth(std::size_t x, std::size_t y);
 
     /// @brief set the pixels depth
     /// @param x the x pixel chord
     /// @param y the y pixel chord
     /// @param depth the depth to be set
-    void setDepth(int x, int y, float depth);
+    void setDepth(std::size_t x, std::size_t y, float depth);
 
     /// @brief fills the screen with a color
     /// @param color the color o be filled
@@ -43,7 +43,7 @@ class Screen
     /// @param depth the depth to be filled
     void fillZBuffer(float depth = __FLT_MAX__);
 
-    const int width; int height;
+    const std::size_t width; std::size_t height;
     Pixel* buffer;
     float* depthmap;
 

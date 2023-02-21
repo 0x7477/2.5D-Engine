@@ -74,7 +74,7 @@ void Edge::drawSpans(const Edge &edge2)
 		// continue if out of bounds
 		if (y < 0)
 			continue;
-		if (y >= t->screen->height)
+		if (y >= (int)t->screen->height)
 			continue;
 
 		span.draw(y);

@@ -52,7 +52,7 @@ double Renderer::getTextureSampleX(const double &ray_x, const double &ray_y)
     return sample_x;
 }
 
-std::tuple<int, double> Renderer::getSkyboxSampleX(double angle)
+std::tuple<std::size_t, double> Renderer::getSkyboxSampleX(double angle)
 {
     angle -= floor(angle / (2 * M_PI)) * 2 * M_PI;
 
@@ -70,7 +70,7 @@ std::tuple<int, double> Renderer::getSkyboxSampleX(double angle)
     return {0, Renderer::map(percent, 3.5, 4.0, 0.0, 0.5)};
 }
 
-void Renderer::renderSkybox(const int &x, const int &y, const int &sky_image, const double &sky_sample_x)
+void Renderer::renderSkybox(const std::size_t &x, const std::size_t &y, const std::size_t &sky_image, const double &sky_sample_x)
 {
     if (screen->getDepth(x, y) != __FLT_MAX__)
         return;
@@ -88,7 +88,7 @@ void Renderer::renderSkybox(const int &x, const int &y, const int &sky_image, co
     screen->setColor(x, y, color);
 }
 
-bool Renderer::renderFloor(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
+bool Renderer::renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
 {
 
     const double z_plane = (1.3 * screen->height) / (std::max(1.0, (double)(screen->height / 2 - y)) * cos_angle_diff);
@@ -118,7 +118,7 @@ bool Renderer::renderFloor(const int &x, const int &y, const double &cos_ray_ang
     return true;
 }
 
-bool Renderer::renderCeiling(const int &x, const int &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
+bool Renderer::renderCeiling(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff)
 {
     const double z_plane = (0.7 * screen->height) / (std::max(1.0, (double)(y - screen->height / 2)) * cos_angle_diff);
 
@@ -146,7 +146,7 @@ bool Renderer::renderCeiling(const int &x, const int &y, const double &cos_ray_a
     return true;
 }
 
-bool Renderer::renderWall(const int &x, const int &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x)
+bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x)
 {
     // sample the y chord
     const double sample_y = (y - floor) / (double)(ceiling - floor);
@@ -161,18 +161,39 @@ bool Renderer::renderWall(const int &x, const int &y, const double &distance, co
     return true;
 }
 
-void Renderer::renderWallCollum(const int &x)
+void Renderer::renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x)
 {
-    auto player = game->player;
+    bool rendered = false;
+        // renderSkybox
 
+    if (y >= ceiling) // draw a roof tile
+    {
+        rendered = renderCeiling(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
+    }
+    else if (y >= floor)
+    {
+        rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x);
+    }
+    else // Floor
+    {
+        rendered = renderFloor(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
+    }
+
+    if (!rendered)
+        renderSkybox(x, y, sky_image, sky_sample_x);
+}
+
+
+void Renderer::renderWallColumn(const std::size_t &x)
+{
     const auto ray_angle = getRayAngle(x);
     const auto cos_ray_angle = std::cos(ray_angle);
     const auto sin_ray_angle = std::sin(ray_angle);
-    const auto cos_angle_diff = std::cos(ray_angle - player.angle);
+    const auto cos_angle_diff = std::cos(ray_angle - player->angle);
 
     // shoot the ray
     double ray_x, ray_y;
-    const auto distance = Raycast::raycast(&player, &game->map, ray_angle, &ray_x, &ray_y);
+    const auto distance = Raycast::raycast(player, &game->map, ray_angle, &ray_x, &ray_y);
 
     const auto fish_eye_fixed_distance = distance * ((WindowManager::buttons['b']) ? 1 : cos_angle_diff);
     // calculate heights
@@ -188,33 +209,15 @@ void Renderer::renderWallCollum(const int &x)
 
     std::tie(sky_image, sky_sample_x) = getSkyboxSampleX(ray_angle);
 
-    for (int y = 0; y < screen->height; y++)
-    {
-        bool rendered = false;
-        // renderSkybox
-
-        if (y >= ceiling) // draw a roof tile
-        {
-            rendered = renderCeiling(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
-        }
-        else if (y >= floor)
-        {
-            rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x);
-        }
-        else // Floor
-        {
-            rendered = renderFloor(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
-        }
-
-        if (!rendered)
-            renderSkybox(x, y, sky_image, sky_sample_x);
-    }
+    for (int y = 0; y < (int)screen->height; y++)
+        renderWallPixel(x,y,cos_ray_angle,sin_ray_angle,cos_angle_diff,distance,floor,ceiling,texture,sample_x,sky_image,sky_sample_x);
+    
 }
 
 void Renderer::renderWalls()
 {
-    for (int x = 0; x < game->window_manager.screen->width; x++)
-        renderWallCollum(x);
+    for (std::size_t x = 0; x < screen->width; x++)
+        renderWallColumn(x);
 }
 
 void Renderer::renderBillboard(const Billboard &object)
@@ -231,7 +234,7 @@ void Renderer::renderBillboard(const Billboard &object)
     int object_floor = getFloorScreenYPos(screen->height, dist);
 
     int unit_height = object_ceiling - object_floor;
-    int object_height = (int)(unit_height * object.height);
+    std::size_t object_height = (std::size_t)(unit_height * object.height);
 
     double object_ratio = object.height / object.width;
     double object_width = object_height / object_ratio;
@@ -242,9 +245,9 @@ void Renderer::renderBillboard(const Billboard &object)
     int texture_height = object.texture->height;
 
     // loop through every pixel
-    for (int lx = 0; lx < object_width; lx++)
+    for (std::size_t lx = 0; lx < object_width; lx++)
     {
-        int screen_x = object_center + lx - (int)(object_width / 2);
+        std::size_t screen_x = object_center + lx - (std::size_t)(object_width / 2);
 
         // skip if not visible
         if (screen_x < 0 || screen_x >= screen->width)
@@ -254,9 +257,9 @@ void Renderer::renderBillboard(const Billboard &object)
         int sample_x = (int)((lx / object_width) * texture_width);
 
         // loop through the heights
-        for (int ly = 0; ly < object_height; ly++)
+        for (std::size_t ly = 0; ly < object_height; ly++)
         {
-            int screen_y = object_floor + ly + (int)(unit_height * object.pos.z);
+            std::size_t screen_y = object_floor + ly + (std::size_t)(unit_height * object.pos.z);
             // skip if out of screen
             if (screen_y < 0 || screen_y >= screen->height)
                 continue;
