@@ -41,7 +41,7 @@ void Span::draw(int y)
 	double v_delta = uv2.v - uv1.v;
 
 	// draw each pixel in the span
-	for(int x = x1; x < x2; x++) 
+	for(int x = x1; x <= x2; x++) 
     {
 		auto depth = depth1 + depth_delta * factor;
 		auto u = uv1.u + u_delta * factor;

@@ -8,7 +8,8 @@
 #include <filesystem>
 
 Game::Game(int argc, char **argv)
-:map{50, 50}, renderer{this},window_manager{argc, argv, this} {};
+:map{50, 50}, renderer{this},window_manager{argc, argv, this} 
+{};
 
 void Game::start()
 {
@@ -20,7 +21,8 @@ void Game::start()
     billboards = {
         {{2,2,0},"test"},
         {{22,12,0},"tomato"},
-        {{8,8,0},"tomato"},
+        {{8,8,0},"tomato_rambo"},
+        {{22,22,0},"tomato_back"},
         {{30,30,-0.5},"tree",2,3},
         {{45,32,-0.5},"tree",2,3}
         };

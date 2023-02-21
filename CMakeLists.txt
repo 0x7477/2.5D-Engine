@@ -22,7 +22,7 @@ file(GLOB_RECURSE sources src/*.cpp include/*.hpp)
 add_executable(shooter ${sources})
 
 # Just for example add some compiler flags.
-target_compile_options(shooter PUBLIC -std=c++2a -Wall -Wfloat-conversion -g -O0)
+target_compile_options(shooter PUBLIC -std=c++2a -Wall -Wfloat-conversion -O2)
 
 
 set(CMAKE_BUILD_TYPE Debug)

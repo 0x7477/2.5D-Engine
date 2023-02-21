@@ -32,5 +32,5 @@ public:
     WorldPoint view_l, view_r;
     //the turn and movement speed
     double turn_speed = 0.000003;
-    double movement_speed = 0.00001;
+    double movement_speed = 0.00002;
 };

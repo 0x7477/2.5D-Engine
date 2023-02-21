@@ -11,9 +11,7 @@
 Renderer::Renderer(Game *game)
     : game{game}, player{&game->player},
       sky_textures{&Game::textures["sky_0"], &Game::textures["sky_1"], &Game::textures["sky_2"], &Game::textures["sky_3"], &Game::textures["test"], &Game::textures["swastika"]}
-
-{
-}
+{}
 
 double Renderer::getRayAngle(const int &x)
 {
@@ -31,25 +29,25 @@ int Renderer::getCeilScreenYPos(const int &screen_height, const double &distance
     return (screen_height / 2) + (int)((screen_height / distance) * 0.7);
 }
 
-double Renderer::getTextureSampleX(const double &ray_x, const double &ray_y)
+std::tuple<std::size_t, double> Renderer::getTextureSampleX(const double &ray_x, const double &ray_y)
 {
     double blockX = (double)((int)ray_x) + 0.5f;
     double blockY = (double)((int)ray_y) + 0.5f;
 
     double testAngle = atan2(ray_y - blockY, ray_x - blockX);
 
-    double sample_x = 0;
     // depending on which side of the wall we are we need to sample differently
     if (testAngle >= -M_PI * 0.25f && testAngle < M_PI * 0.25f)
-        sample_x = ray_y - (int)ray_y;
+        return {0,ray_y - (int)ray_y};
     if (testAngle >= M_PI * 0.25f && testAngle < M_PI * 0.75f)
-        sample_x = 1 - (ray_x - (int)ray_x);
+        return {1, 1 - (ray_x - (int)ray_x)};
     if (testAngle < -M_PI * 0.25f && testAngle >= -M_PI * 0.75f)
-        sample_x = ray_x - (int)ray_x;
+        return {2, ray_x - (int)ray_x};
     if (testAngle >= M_PI * 0.75f || testAngle < -M_PI * 0.75f)
-        sample_x = 1 - (ray_y - (int)ray_y);
+        return {3, 1 - (ray_y - (int)ray_y)};
 
-    return sample_x;
+    return {0,0};
+
 }
 
 std::tuple<std::size_t, double> Renderer::getSkyboxSampleX(double angle)
@@ -152,7 +150,7 @@ bool Renderer::renderCeiling(const std::size_t &x, const std::size_t &y, const d
     return true;
 }
 
-bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x)
+bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const double &distance, const int &floor, const int &ceiling, const Texture *texture, const double &sample_x,const int& wall_side)
 {
     if (screen->getDepth(x, y) < distance) 
         return false;
@@ -164,20 +162,22 @@ bool Renderer::renderWall(const std::size_t &x, const std::size_t &y, const doub
     if (sample.a == 0)
         return false;
 
+    sample.setBrightness(wall_lightings[wall_side]);
+
     screen->setDepth(x, y, (float)distance);
     screen->setColor(x, y, sample);
 
     return true;
 }
 
-void Renderer::renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const std::size_t & sky_image,const double & sky_sample_x)
+void Renderer::renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x, const int& wall_side,const std::size_t & sky_image,const double & sky_sample_x)
 {
     bool rendered = false;
 
     if (y >= ceiling) // draw a ceiling
         rendered = renderCeiling(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
     else if (y >= floor) //draw a wall
-        rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x);
+        rendered = renderWall(x, y, distance, floor, ceiling, texture, sample_x, wall_side);
     else // draw a floor
         rendered = renderFloor(x, y, cos_ray_angle, sin_ray_angle, cos_angle_diff);
 
@@ -203,16 +203,16 @@ void Renderer::renderWallColumn(const std::size_t &x)
     const int ceiling = getCeilScreenYPos(screen->height, fish_eye_fixed_distance);
 
     // get sample
-    const double sample_x = getTextureSampleX(ray_x, ray_y);
+    double sample_x, sky_sample_x;
+    int wall_side = 0, sky_image = 0;
+    std::tie(wall_side, sample_x) = getTextureSampleX(ray_x, ray_y);
     const auto texture = game->map((int)ray_x, (int)ray_y)->texture;
 
-    int sky_image = 0;
-    double sky_sample_x = 0;
 
     std::tie(sky_image, sky_sample_x) = getSkyboxSampleX(ray_angle);
 
     for (int y = 0; y < (int)screen->height; y++)
-        renderWallPixel(x,y,cos_ray_angle,sin_ray_angle,cos_angle_diff,distance,floor,ceiling,texture,sample_x,sky_image,sky_sample_x);
+        renderWallPixel(x,y,cos_ray_angle,sin_ray_angle,cos_angle_diff,distance,floor,ceiling,texture,sample_x,wall_side,sky_image,sky_sample_x);
     
 }
 
@@ -314,6 +314,12 @@ void Renderer::render()
 {
     screen = game->window_manager.screen; // update in case we have gotten a new screen buffer
     game->window_manager.screen->fillZBuffer();
+
+
+    wall_lightings[0] = 0.5f * (float)(1+(game->light.getDirection() * WorldPoint{1,0,0}));
+    wall_lightings[1] = 0.5f * (float)(1+(game->light.getDirection() * WorldPoint{0,1,0}));
+    wall_lightings[2] = 0.5f * (float)(1+(game->light.getDirection() * WorldPoint{0,-1,0}));
+    wall_lightings[3] = 0.5f * (float)(1+(game->light.getDirection() * WorldPoint{-1,0,0}));
     renderMeshes();
     renderWalls();
     renderBillboards();

@@ -47,6 +47,7 @@ class Game
     Renderer renderer;
     /// @brief the light for lighting up the game
     DirectionalLight light{{0.5773502691896258,-0.5773502691896258,0.5773502691896258},1};
+
     /// @brief the window manager for the game
     WindowManager window_manager;
 };

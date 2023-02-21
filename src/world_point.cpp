@@ -45,12 +45,17 @@ float inverseSquareRoot(const float number)
 
     x2 = number * 0.5F;
     y = number;
+    #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+    #pragma GCC diagnostic ignored "-Wuninitialized"
+    #pragma GCC diagnostic ignored "-Warray-bounds"
     i = *(long *)&y;           // evil floating point bit level hacking
     i = 0x5f3759df - (i >> 1); // what the fuck?
     y = *(float *)&i;
     y = y * (threehalfs - (x2 * y * y)); // 1st iteration
                                          //	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-
+    #pragma GCC diagnostic pop 
+    #pragma GCC diagnostic pop 
+    #pragma GCC diagnostic pop 
     return y;
 }
 
