@@ -335,3 +335,114 @@ for (int x = 0; x < object_width; x++)
     renderBillboardColumn(object, x, object_center, object_width,object_height, object_floor, unit_height, dist);
 
 ```
+
+
+Now we only check if the column is on the screen and calculate the x coord sample.
+
+```C++
+std::size_t screen_x = object_center + x - (int)(object_width / 2);
+
+// skip if not visible
+if (screen_x < 0 || screen_x >= screen->width)
+    return;
+
+// get sample of x chord
+const double sample_x = ((double)x / object_width);
+
+// loop through the heights
+for (int y = 0; y < object_height; y++)
+    renderBillboardPixel(object, screen_x,y, object_center, object_width, object_height, object_floor, unit_height, dist, sample_x);
+
+```
+Here we calculate the y position on the screen, check for screen bounds and check the zBuffer.
+After that we sample the pixel and draw it.
+
+```C++
+std::size_t screen_y = object_floor + y + (std::size_t)(unit_height * object.pos.z);
+// skip if out of screen
+if (screen_y < 0 || screen_y >= screen->height)
+    return;
+
+    // skip if billboard is hidden
+if (dist > screen->getDepth(screen_x, screen_y))
+    return;
+
+const double sample_y = (double)y / object_height;
+
+Pixel sampled_pixel = (*object.texture)(sample_x, sample_y);
+
+// skip if texture is transparent at pixel
+if (sampled_pixel.a == 0)
+    return;
+
+// draw pixel
+screen->setColor(screen_x, screen_y, sampled_pixel);
+screen->setDepth(screen_x, screen_y, (float)dist);
+```
+
+# Rendering of the Meshes
+
+For the mesh rendering, we load the models from the .obj and the uv_texture.
+Then we apply the transformations on the points of the verticies, and draw the triangles.
+
+```C++
+        world_points[i]={transform.rot *  obj.vertexes[i].p * transform.scale + transform.pos};
+        screen_points[i]={game, world_points[i]};   
+```
+
+To convert the world points to screen points we use the same logic we used for billboards.
+
+
+```C++
+const auto object_angle = point.getAngle(&game->player);
+z = (float)point.getDistance(&game->player);
+
+// map the angle to screenspace
+x = (int)Renderer::map(object_angle, -game->player.field_of_view / 2, game->player.field_of_view / 2, 0, game->window_manager.screen->width);
+
+int floor = Renderer::getFloorScreenYPos(game->window_manager.screen->height,z);
+int ceil = Renderer::getCeilScreenYPos(game->window_manager.screen->height,z);
+
+// interpolate z from floor to ceil
+y = (int)Renderer::map(point.z, 0, 1, floor, ceil);
+```
+
+## Drawing of the triangles
+For the drawing we split the triangle in an upper and a lower half. 
+
+Then we interpolate the uv coords and the depth linearly between the three points.
+For every point in the triangle we draw the triangle like so:
+
+```C++
+if(x < 0 || x >= (int)t->screen->width) continue;
+
+//skip if hidden
+if(t->screen->getDepth(x,y) < depth)
+    continue;
+
+int sample_x = (int)(u * (t->texture->width-1));
+int sample_y = (int)(v * (t->texture->height-1));
+
+
+Pixel texture_sample = (*t->texture)(sample_x,sample_y);
+
+texture_sample.setBrightness(t->light_intensity);
+
+t->screen->setColor(x,y,texture_sample);
+t->screen->setDepth(x,y,depth);
+```
+
+First we check if we are in screen bounds. Then we sample our uv texture and draw the 
+pixel. We take into consideration the lambertian lighting of the triangle. 
+For calculating the light intensity we just map the scalar product of the normal with our
+triangle normal and map it to a value from 0 to 1.
+
+```C++
+    light_intensity = 0.5f * (float)(1+(mesh->game->light.getDirection() * normal));
+```
+
+# Conclusion
+
+There is more to describe, but describing the whole project would be a little excessive.
+I've attached a good amount of inline documentation and tried to follow clean code practice
+to make the code pretty readable imho :)

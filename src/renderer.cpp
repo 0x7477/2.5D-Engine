@@ -230,16 +230,16 @@ void Renderer::renderBillboardPixel(const Billboard &object, const int& screen_x
     if (screen_y < 0 || screen_y >= screen->height)
         return;
 
+     // skip if billboard is hidden
+    if (dist > screen->getDepth(screen_x, screen_y))
+        return;
+
     const double sample_y = (double)y / object_height;
 
     Pixel sampled_pixel = (*object.texture)(sample_x, sample_y);
 
     // skip if texture is transparent at pixel
     if (sampled_pixel.a == 0)
-        return;
-
-    // skip if billboard is hidden
-    if (dist > screen->getDepth(screen_x, screen_y))
         return;
 
     // draw pixel
