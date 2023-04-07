@@ -40,6 +40,7 @@ void Map::generate()
         {
             map[x + y * width].ceiling_transparent = false;
             map[x + y * width].ceiling_texture = &(Game::textures["floor"]);
+            map[x + y * width].floor_transparent = false;
             map[x + y * width].floor_texture = &(Game::textures["floor"]);
 
             if (x > 10 && x < 19 && y > 10 && y < 19)
@@ -53,6 +54,17 @@ void Map::generate()
 
     map[15 + 10 * width].transparent = true;
     map[15 + 10 * width].walkable = true;
+
+
+    for (std::size_t y = 30; y < 35; y++)
+    {
+        for (std::size_t x = 30; x < 35; x++)
+        {
+            map[x + y * width].floor_transparent = false;
+            map[x + y * width].floor_texture = &(Game::textures["water"]);
+
+        }
+    }
 }
 
 void Map::display()

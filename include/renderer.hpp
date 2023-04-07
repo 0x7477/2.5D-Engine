@@ -64,12 +64,12 @@ void renderBillboardPixel(const Billboard &object, const int& screen_x,const int
     void renderWalls();
 
 
-    void renderWallColumn(const std::size_t &x);
-    void renderSkybox(const std::size_t &x,const std::size_t &y,const std::size_t & sky_image,const double & sky_sample_x);
-    bool renderCeiling(const std::size_t &x,const std::size_t &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
-    bool renderWall(const std::size_t &x, const std::size_t &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const int& wall_side);
-    bool renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
-    void renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const int& wall_side,const std::size_t & sky_image,const double & sky_sample_x);
+    inline void renderWallColumn(const std::size_t &x);
+    inline void renderSkybox(const std::size_t &x,const std::size_t &y,const std::size_t & sky_image,const double & sky_sample_x);
+    inline bool renderCeiling(const std::size_t &x,const std::size_t &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff);
+    inline bool renderWall(const std::size_t &x, const std::size_t &y, const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const int& wall_side);
+    inline bool renderFloor(const std::size_t &x, const std::size_t &y, const double &cos_ray_angle, const double &sin_ray_angle, const double &cos_angle_diff);
+    inline void renderWallPixel(const int &x,const int &y,const double & cos_ray_angle,const double & sin_ray_angle,const double & cos_angle_diff,const double& distance, const int &floor, const int &ceiling, const Texture* texture, const double& sample_x,const int& wall_side,const std::size_t & sky_image,const double & sky_sample_x);
 
     Game* game;
     Screen* screen;

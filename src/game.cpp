@@ -23,8 +23,8 @@ void Game::start()
         {{22,12,0},"tomato"},
         {{8,8,0},"tomato_rambo"},
         {{22,22,0},"tomato_back"},
-        {{30,30,-0.5},"tree",2,3},
-        {{45,32,-0.5},"tree",2,3}
+        {{25,30,-0.2},"tree",2,3},
+        {{45,32,-0.2},"tree",2,3}
         };
 
     //init gameclock

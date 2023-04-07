@@ -12,7 +12,10 @@ bool Player::isPointVisible(const WorldPoint& point) const
 
 bool Player::isNormalVisible(const WorldPoint& point) const
 {
-    return true;
+    WorldPoint player_angle = {sin(angle),cos(angle),0};
+
+    
+    return (player_angle * point) < 0;
 }
 
 void Player::move(Map* map, double deltaTime)

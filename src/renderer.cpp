@@ -105,7 +105,7 @@ bool Renderer::renderFloor(const std::size_t &x, const std::size_t &y, const dou
     if (!game->map.covers(sample_x_int, sample_y_int))
         return false;
 
-    if (ceil_tile->ceiling_transparent)
+    if (ceil_tile->floor_transparent)
         return false;
 
     auto sample_x = plane_point_x - sample_x_int;

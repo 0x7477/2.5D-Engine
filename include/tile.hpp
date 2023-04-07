@@ -20,7 +20,7 @@ public:
     /// @return returns the walkability of the tile
     bool isWalkable() {return walkable;}
 
-    bool transparent = true, ceiling_transparent = true;
+    bool transparent = true, floor_transparent = true, ceiling_transparent = true;
     bool walkable = true;
     Texture *texture, *ceiling_texture,*floor_texture;
 

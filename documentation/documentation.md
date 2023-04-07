@@ -441,6 +441,17 @@ triangle normal and map it to a value from 0 to 1.
     light_intensity = 0.5f * (float)(1+(mesh->game->light.getDirection() * normal));
 ```
 
+We then alter the color of the pixel according to the brightness like so
+
+```C++
+void Pixel::setBrightness(float brightness)
+{
+    r = (unsigned char)((float)r * brightness);
+    g = (unsigned char)((float)g * brightness);
+    b = (unsigned char)((float)b * brightness);
+}
+```
+
 # Conclusion
 
 There is more to describe, but describing the whole project would be a little excessive.
